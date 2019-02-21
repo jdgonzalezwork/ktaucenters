@@ -2,7 +2,7 @@
 title: "ktaucenters package: Robust and efficient Clustering"
 author: "Juan Domingo Gonzalez"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: rmarkdown::pdf_document
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
   %\VignetteEngine{knitr::rmarkdown}
@@ -12,14 +12,18 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width=5, 
+  fig.height=5
 )
 ```
-# Introduction
+
+## Introduction
 
 This package implements a kind of kmeans algorithm with two advantages:
+
 * The estimator is resistant to outliers, that means that 
-results are still "good" when there are atipycal values in the sample.  
+results of estimator are still correct when there are atipycal values in the sample.  
 
 * The estimator is efficient, roughly speaking, if there are not outliers in the sample (all data is good), results will be similar than those obtain by a classic algorithm (kmeans)
 
@@ -27,12 +31,13 @@ Clustering procedure is carried out by minimizing the overall robust scale so-ca
 
 
 
-# How to use the package ktaucenters
+## How to use the package ktaucenters
 
-## example 1: behavior when data are clean
+### Example 1: behavior when data are clean
 
 ```{r}
-library("ktaucenters")
+rm(list=ls())
+library(ktaucenters, quietly = TRUE)
 # Generate Sintetic data (three cluster well separated)
 set.seed(1)
 Z <- rnorm(600);
@@ -48,13 +53,13 @@ kmeans_output <- kmeans(X,centers=3,nstart=10)
 plot(X,main=" Efficiency")
 points(ktau_output$centers,pch=19,col=2,cex=2)
 points(kmeans_output$centers,pch=17,col=3,cex=2)
-legend(-8,6,pch=c(19,17),col=c(2,3),cex=1,legend=c("ktau centers" ,"kmeans centers"))
+legend(-6,6,pch=c(19,17),col=c(2,3),cex=1,legend=c("ktau centers" ,"kmeans centers"))
 ```
+
 As was stated previously, if the data are clean, there are no differeces between kmeans and ktaucenters.   
 
-## example 2  behavior in the presence of outliers 
-```{r, include = FALSE}
-library("ktaucenters")
+### Example 2:  behavior in the presence of outliers 
+```{r}
 # Generate 60 sintetic outliers (contamination level 20%)
 X[sample(1:300,60), ] <- matrix(runif( 40, 2* min(X), 2 * max(X) ),
                                 ncol = 2, nrow = 60)
@@ -63,7 +68,9 @@ X[sample(1:300,60), ] <- matrix(runif( 40, 2* min(X), 2 * max(X) ),
 ktau_output <- ktaucenters(X, K=3,nstart=10)
 ### Applying the classic algortihm  ####
 kmeans_output <- kmeans(X,centers=3,nstart=10)
+```
 
+```{r fig2,fig.height = 5, fig.width = 5, fig.align = "center"}
 ### plotting the center results 
 plot(X,main=" Robustness ")
 points(ktau_output$centers,pch=19,col=2,cex=2)
@@ -73,24 +80,78 @@ legend(-10,10,pch=c(19,17),col=c(2,3),cex=1,legend=c("ktau centers" ,"kmeans cen
 
 As it can be observed, kmeans center were influencied by outliers, while ktaucenters are still razonable. 
 
-## example 3  Show Clusters and outliers detection procedure 
+### Example 3:  Showing clusters and outliers detection procedure 
 
-For outliers recognition purposes we can see the ```{r} ktau_output$outliers```  that indicates the indices that may considered as outliers, on the other hand  the labels of each cluster found by the algorithm is ```ktau_output$clusters``` 
+For outliers recognition purposes we can see the ```ktau_output$outliers```  that indicates the indices that may considered as outliers, on the other hand  the labels of each cluster found by the algorithm is ```ktau_output$clusters``` 
 
-```{r, include = FALSE}
-library("ktaucenters")
-plot(X,main=" Clusters and outliers detection ")
-points(ktau_output$centers,pch=19,col=2,cex=2)
-points(kmeans_output$centers,pch=17,col=3,cex=2)
-points(X[kmeans_output$outliers, ],pch=19,col=1,cex=1)
-legend(-10,10,pch=c(19,17,19),col=c(2,3),cex=1,legend=c("ktau centers" ,"kmeans centers","outliers"))
+```{r}
+plot(X,main=" Estimated clusters and outliers detection ")
+## plottig clusters 
+for (j in 1:3){
+  points(X[ktau_output$cluster==j, ], col=j+1)
+}
+
+## plottig outliers 
+points(X[ktau_output$outliers, ], pch=19, col=1, cex=1)
+legend(7,15,pch=c(1,1,1,19),col=c(2,3,4,1),cex=1,
+       legend=c("cluster 1" ,"cluster 2","cluster 3","detected \n outliers"),bg = "gray")
+```
+
+
+## improved ktaucenters 
+
+The algorithm ktaucenter work well under noisy data, but fails when clusters have different size shape and orientation, an algorithm suitable for this sort of data is ```improvektaucenters```. 
+To show how this algorithm works  we use the data set so-called M5data from package tclust ref()
+
+> "A bivariate data set obtained from three normal bivariate distributions with different scales and proportions 1:2:2. One of the components is very overlapped with another one. A 10% background noise is added uniformly distributed in a rectangle containing the three normal components and not very overlapped with the three mixture components."
+
+### usage
+```{r,fig.show='hold',fig.height = 4.5, fig.width = 4.5}
+
+## load non spherical datadata 
+library("tclust")
+data("M5data")
+X=M5data[,1:2]
+true.clusters=M5data[,3]
+
+#run the function to estimate clusters
+
+improved_output=improvedktaucenters(X,K=3,cutoff=0.95)
+``` 
+
+Variable `improved_output` is a list that contains the fields `outliers` and `cluster`. We can have access to the cluster labeled as 2 by typing  
+
+`X[improved_output$cluster==2, ] `.
+
+If we want to know the values of outliers, type
+
+` X[improved_output$outliers=2 ]`.
+
+
+By using these commands, it is easy to estimate the original clusters by means of `improvedktaucenters` routine. 
+
+```{r,echo=FALSE,fig.show='hold',fig.height = 4.5, fig.width = 4.5}
+plot(X,type="n",pch=19,main="(a) M5Data - original clusters \n (outliers in black dots)" )
+colors1=c(3,4,2)
+for (j in 1:3){
+  points(X[true.clusters==j, ], col=colors1[j],pch=j-1)
+}
+points(X[true.clusters==0, ], col=1,pch=19)
+
+plot(X,type="n",pch=19,main="(b) improved ktaucenter Output \n (estimated outliers in black dots)" )
+
+orderInd=order(improved_output$centers[,1]) 
+for (j in 1:3){
+  col1=which(orderInd==j)
+  points(X[improved_output$cluster==j, ], col=col1+1,pch=col1-1)
+}
+points(X[improved_output$outliers, ], col=1,pch=19)
 ```
 
 
 
 
-# improved ktaucenters 
-The algorithm ktaucenter work well under noisy data, but fails when clusters have different size shape and orientation, an algorithm suitable for this sort of data is improvektaucenters, 
+
 
 
 The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
@@ -126,28 +187,8 @@ knitr::kable(head(mtcars, 10))
 
 Also a quote using `>`:
 
-> "He who gives up [code] safety for [code] speed deserves neither."
+He who gives up [code] safety for [code] speed deserves neither."
 ([via](https://twitter.com/hadleywickham/status/504368538874703872))
 
----
-references:
-- id: fenner2012a
-  title: One-click science marketing
-  author:
-  - family: Fenner
-    given: Martin
-  container-title: Nature Materials
-  volume: 11
-  URL: 'http://dx.doi.org/10.1038/nmat3283'
-  DOI: 10.1038/nmat3283
-  issue: 4
-  publisher: Nature Publishing Group
-  page: 261-263
-  type: article-journal
-  issued:
-    year: 2012
-    month: 3
----
 
-
-
+ 

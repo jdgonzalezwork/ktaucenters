@@ -76,7 +76,15 @@ ROBINDEN <- function(D,data,k,mp=10){
       sort.points <- sort.int(apply(D[id.means[1:m],],2,min),decreasing=TRUE) %>%names() %>% as.numeric()
     }
     idp.sort.points <- idp[sort.points]
-    id <- which(c(idp.sort.points<critRobin))[1]
+    id <- which(c(idp.sort.points<=critRobin))[1]
+    
+    if (all((idp.sort.points>critRobin))){
+    # Juan D. Gonzalez  
+    #some times id is empty because all idp.sort.points are greater than 
+    # the critRobin Value, then I take the nearest point to critRobin
+    id=order((idp.sort.points-critRobin),decreasing=FALSE)[1]
+    }
+    
     r <- sort.points[id]
     id.means[m] <- r
 

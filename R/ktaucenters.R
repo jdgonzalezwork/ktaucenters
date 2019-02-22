@@ -1,5 +1,5 @@
-  #' ktaucenters
-  #'
+#' ktaucenters
+#'
 #' Robust Clustering algorithm based on centers, a robust and efficient version of KMeans.
 #' @param X numeric matrix  of size n x p.
   #' @param K the number of cluster.

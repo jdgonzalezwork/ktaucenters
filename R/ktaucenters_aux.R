@@ -3,11 +3,11 @@
   #' Robust Clustering algorithm based on centers, a robust and efficient version of KMeans.
   #' @param X A matrix  of size n x p.
   #' @param K The number of clusters.
-#' @param centers  matrix of size K x p containing the K initial centers, one at each matrix-row.
-#' @param tolmin  tolerance parameter used for the algorithm stopping rule
-#' @param NiterMax a maximun number of iterations used for the algorithm stopping rule
-#' @return A list including the estimated K centers and labels for the observations
-#' \itemize{
+  #' @param centers  matrix of size K x p containing the K initial centers, one at each matrix-row.
+  #' @param tolmin  tolerance parameter used for the algorithm stopping rule
+  #' @param NiterMax a maximun number of iterations used for the algorithm stopping rule
+  #' @return A list including the estimated K centers and labels for the observations
+  #' \itemize{
   #'  \item{\code{centers}}{:   matrix of size K x p, with the estimated K centers.}
   #'  \item{\code{cluster}}{: array of size n x 1  integers labels between 1 and K.}
   #'  \item{\code{tauPath}}{: sequence of tau scale values at each iterations.}
@@ -37,7 +37,6 @@
 #' @note
 #' Some times, if the initial centers are wrong, the algorithm converges to a non-optimal (local) solution.
 #' To avoid that, the algorithm must be run several times. This task is carried out by \code{\link{ktaucenters}}
-#'
 #' @seealso \code{\link{ktaucenters}}
 #' @export
 ktaucenters_aux=function(X,K,centers,tolmin,NiterMax){

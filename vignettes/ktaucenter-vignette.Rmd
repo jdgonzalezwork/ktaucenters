@@ -1,6 +1,6 @@
 ---
 title: "ktaucenters package: Robust and efficient Clustering"
-author: "Juan Domingo Gonzalez, Ruben Zamar, Victor Yohai"
+author: "Juan Domingo Gonzalez, Victor Yohai, Ruben Zamar"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 fig_caption: yes
@@ -151,7 +151,8 @@ If we want to know the values of outliers, type
 
 By using these commands, it is easy to estimate the original clusters by means of `improvedktaucenters` routine. 
 
-```{r,echo=FALSE,fig.show='hold',fig.height = 4.5, fig.width = 4.5}
+```{r,echo=FALSE,fig.show='hold',fig.height = 4.5, fig.width = 9}
+par(mfrow=c(1,2))
 plot(X,type="n",pch=19,main="(a) M5Data - original clusters \n (outliers in black dots)" )
 colors1=c(3,4,2)
 for (j in 1:3){
@@ -174,8 +175,16 @@ points(X[improved_output$outliers, ], col=1,pch=19)
 
 Package has a dataset called `mars_screw`, containing the Intensity and Saturation pixels values of a picture from Mars taken from Rover Curiosity. 
 
+Data set can be loaded by typing `mars_screw$SI_matrix`, or `mars_screw$geographic_matrix`, thats variables means.  
 
-In order to look the screw, in a first stage we do clustering on the matrix A 
+* SI_matrix: A matrix with 5063 rows and 128 columns. Elements 1 to 64 of each row indicate the Saturation values of pixels in a square cell 8 x 8 whereas elements 65 to 128 of each row indicate the cell's Intensity values.
+
+* geographic_matrix: An integer matrix of dimension 5063 x 2, each row indicates each square cell's locations (x-axis y-axis) at the picture.
+
+*screw_index: the index corresponding to the screw observation (screw_index=4180)
+
+
+In order to look the screw, in a first stage we do clustering on the matrix A, to separate differents materials presented in the picture
 ```{r,fig.show='hold',fig.height = 4.5, fig.width = 4.5}
 A <- mars_screw$SI_matrix;
 B <- mars_screw$geographic_matrix
@@ -185,8 +194,7 @@ ret1=ktaucenters(X=A,K=3);
 ## 
 ``` 
 
-Then screw candidate will be those that are geographical outliers regarding to the gruops they were assigned.
-The procedure to find them is shown below. 
+To find the screw candidate, we do a clustering procedure on geographic_matrix, for each cluster determined at the previous step. Outliers will be those that are the furthest observations regarding to the gruops they were assigned. The procedure to find them is shown below. 
 
 ```{r,fig.show='hold',fig.height = 4.5, fig.width = 4.5}
 screw_candidate_index=c()
@@ -196,6 +204,11 @@ for (j in 1:3){
   jcandidate=which(ret1$cluster==j)[dj==max(dj)]
   screw_candidate_index=c(screw_candidate_index,jcandidate)
 }
+```
+
+Figure \ref{fig4}, shows locations of three candidates to be the screw. 
+
+```{r fig4,fig.height = 5, fig.width = 5, fig.align = "center", fig.cap = "\\label{fig:fig3} Plot of Geographic sub matrices, pink circles are the outliers candidates in the geographic matix space."}
 
 plot(B, type="n" )
 for (j in 1:3){
@@ -209,7 +222,7 @@ points(B[screw_candidate_index,1],B[screw_candidate_index,2],col=6,pch=1,cex=3,l
 It is possible to see the image from package-data and screw location by running the following 
 code. To see screw location we use the `mars_screw$screw_index` information. 
 
-```{r,echo=TRUE,fig.show='hold',fig.height = 6 , fig.width = 6}
+```{r fig5,echo=TRUE,fig.show='hold',fig.height = 6 , fig.width = 6}
 ####### Reconstruction image from package-data ##### 
 d=8;
 intensityvar=matrix(0,max(B[,1]+1)*d,max(B[,2])*d)
@@ -226,19 +239,28 @@ for (l in 1:dim(A)[1]){
   #B[l,]=c(i,j)
 }
 svar[svar<0]=0
+``` 
 
 
-#The following are transformation from indices ij locations in B matrix to xy coordinates at the picture 
-
+The following transformation from indices ij locations in B matrix to xy coordinates at the picture is useful to plot the screw location at the image.  
+``` {r}
 nrowIm=495 #dim(myjpg)[1] #(nrowIm pixeles equivale a 1 en mi sist. de coordenadas)
 ncolIm=664 #dim(myjpg)[2] #(ncolIm pixeles equivale a 1 en mi sist. de coordenadas)
 index2ejx=function(indexj){(1/(ncolIm-1))*(indexj-1) +1 }
 index2ejy=function(indexi){((2-1)/(1-nrowIm))*(indexi-nrowIm) +1 }
 mapIndex2coord=function(filaij){ c(index2ejx(filaij[2]),index2ejy(filaij[1]))}
-
 #transforming pixel position ij to equivalent xy values at the image 
 xyscrew=mapIndex2coord(d*mars_screw$geographic_matrix[screw_index, ])
+```
 
+
+We plot the variables intensity and saturation as a raster Image trhough 
+the `rasterImage` function from  `graphics` package, (a pixel with high/low  
+saturation value is drawn in white/black respectively)  
+The location of screw is show in pink circle. To transform the `ij` data from matrix B to 
+its equivalent `xy` mapIndex2coord was used. 
+
+``` {r fig6,echo=TRUE,fig.show='hold',fig.height = 6 , fig.width = 6}
 plot(1:2, type="n",yaxs="i",xaxs="i",main="Intensity variable")
 rasterImage(intensityvar, 1, 1, 2, 2)
 points(xyscrew[1],xyscrew[2],col=6,pch=1,cex=6,lwd=3)
@@ -249,7 +271,8 @@ points(xyscrew[1],xyscrew[2],col=6,pch=1,cex=6,lwd=3)
 ```
 
 ## From image to mars_screw matrix data
-To see the original Image, and its RGB chanels use 
+
+First of all, to see the original Image, and its RGB (Red, Gren, Blue) chanels use 
 
 ```{r,echo=TRUE,fig.show='hold',fig.height = 6 , fig.width = 6}
 ### Rebuilding data from image 
@@ -275,7 +298,8 @@ myjpgB=myjpg;
 myjpgB[,,1]=myjpgB[,,2]=0
 rasterImage(myjpgB, 1, 1, 2, 2)
 ```
-The three chanels are quite similar, that is consequence of that the RGB pixels values are highly correlated. On the other hand, if we want to rebuild the data-set from the original picture, the following code can be used.   
+
+The images corresponding to the three chanels are quite similar, that is consequence of that the RGB pixels values are highly correlated. On the other hand, if we want to rebuild the data-set from the original picture, the following code can be used.   
 
 ```{r,echo=TRUE,fig.show='hold',fig.height = 6 , fig.width = 6}
 # To reconstruct the data from source image. 
@@ -321,16 +345,17 @@ for (i in 1:(nrowIm/d)){
 }
 
 A=A[1:(l-1),]
-
-
-
-dim(A)
-library("ktaucenters")
-dim(A)
-dim(mars_screw$SI_matrix)
-#checking that elements A and mars_screw$SI_matrix are equal 
-mean(abs(A-mars_screw$SI_matrix))
 ```
+
+This is a check whether A and mars_screw$SI_matrix are equal 
+
+```{r}
+mean(abs(A-mars_screw$SI_matrix))==0
+```
+
+
+
+
 
 
  

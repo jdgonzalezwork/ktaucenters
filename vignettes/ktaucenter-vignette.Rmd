@@ -2,7 +2,7 @@
 title: "ktaucenters package: Robust and efficient Clustering"
 author: "Juan Domingo Gonzalez, Victor Yohai, Ruben Zamar"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: rmarkdown::word_document
 fig_caption: yes
 vignette: >
   %\VignetteIndexEntry{Vignette Title}
@@ -19,13 +19,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-<! Cosas que faltan: 
-1. caption en figuras 
-2. referencias a escala tau, al paquete, tesis, y paper futuro. 
-3. reproducir datos de paper.
-4. poner algun escenario de simulacion. 
-!>
-
 ## Introduction
 
 This package implements a kind of kmeans algorithm, it has two main advantages:
@@ -33,10 +26,10 @@ This package implements a kind of kmeans algorithm, it has two main advantages:
 * The estimator is resistant to outliers, that means that 
 results of estimator are still correct when there are atipycal values in the sample.  
 
-* The estimator is efficient, roughly speaking, if there are not outliers in the sample (all data is good), results will be similar than those obtain by a classic algorithm (kmeans)
+* The estimator is efficient, roughly speaking, if there are not outliers in the sample (all data is good), results will be similar than those obtained by a classic algorithm (kmeans)
 
 Clustering procedure is carried out by minimizing the overall robust scale so-called tau scale 
-(see Yohai and Zamar, 1988, [doi:10.1080/01621459.1988.10478611](https://www.tandfonline.com/doi/abs/10.1080/01621459.1988.10478611)).
+(see Yohai and Zamar, 1988, [doi:10.1080/01621459.1988.10478611](https://www.tandfonline.com/doi/abs/10.1080/01621459.1988.10478611) and Gonzalez, Yohai and Zamar 2019 [arxiv:1906.08198](https://arxiv.org/abs/1906.08198)).
 
 
 ## How to use the package ktaucenters
@@ -181,7 +174,7 @@ Data set can be loaded by typing `mars_screw$SI_matrix`, or `mars_screw$geograph
 
 * geographic_matrix: An integer matrix of dimension 5063 x 2, each row indicates each square cell's locations (x-axis y-axis) at the picture.
 
-*screw_index: the index corresponding to the screw observation (screw_index=4180)
+* screw_index: the index corresponding to the screw observation (screw_index=4180)
 
 
 In order to look the screw, in a first stage we do clustering on the matrix A, to separate differents materials presented in the picture
@@ -212,7 +205,8 @@ Figure \ref{fig4}, shows locations of three candidates to be the screw.
 
 plot(B, type="n" )
 for (j in 1:3){
-  col1=which(orderInd==j)
+#  col1=which(orderInd==j)
+  col1=j
   points(B[ret1$cluster==j,],col=col1+1,pch=19)
 }
 points(B[screw_candidate_index,1],B[screw_candidate_index,2],col=6,pch=1,cex=3,lwd=3)

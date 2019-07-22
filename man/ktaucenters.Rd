@@ -82,3 +82,7 @@ points(X[sal$cluster==2,],col=3);
 points(X[sal$cluster==3,],col=4)
 
 }
+\references{
+Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019). 
+Robust Clustering Using Tau-Scales. arXiv preprint arXiv:1906.08198.
+}

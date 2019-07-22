@@ -7,7 +7,7 @@
 normal_consistency_constants(p)
 }
 \arguments{
-\item{p}{dimension where observation live}
+\item{p}{dimension where observation lives}
 }
 \value{
 cvalue

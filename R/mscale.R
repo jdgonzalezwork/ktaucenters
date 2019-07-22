@@ -64,7 +64,7 @@ Mscale <- function(u, b=0.5, c){
 #' with the standard normal distribution for the optimal rho function considered in \code{\link{rhoOpt}}.
 #' (Constant were computed from p=1 till p =400)
 #'
-#' @param p dimension where observation live
+#' @param p dimension where observation lives
 #' @return cvalue
 #'
 #' @examples

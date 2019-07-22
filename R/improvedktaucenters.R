@@ -8,6 +8,8 @@
 #' @param nstart optional the number of trials that the base algorithm ktaucenters_aux is run
 #' at the first stage. #' If it is greater than 1 and center is not set as NULL,
 #' a random set of (distinct) rows in x is chosen as the initial centres for each try.
+#' @param INITcenters numeric matrix  of size K x p indicating the initial centers for that clusters and robust covarianze matrices will be 
+#' computed, if it is set as NULL the algorithm will compute @param INITcenters from ktaucenters routine. Set to NULL by default. 
 #' @return A list including the estimated K centers and clusters labels for the observations
 
 ## @details text describing parameter inputs in more detail.
@@ -16,9 +18,10 @@
 #'  \item{\code{cluster}}{: array of size n x 1  integers labels between 1 and K.}
 #'  \item{\code{tauPath}}{: sequence of tau scale values at each iterations.}
 #'  \item{\code{Wni}}{: numeric array of size n x 1 indicating the weights associated to each observation.}
-#'  \item{\code{emptyClusterFlag}}{: a boolean value. True means that in some iteration there were clusters totally empty}
-#'  \item{\code{niter}}{: number of iterations untill convergence is achived or maximun number of iteration is reached}
+#'  \item{\code{emptyClusterFlag}}{: a boolean value. True means that in some iteration there were clusters totally empty.}
+#'  \item{\code{niter}}{: number of iterations untill convergence is achived or maximun number of iteration is reached.}
 #'  \item{\code{sigmas}}{: a list containing the k covariance matrices found by the procedure at its second step.}
+#'  \item{\code{outliers}}{: indices observation that can be considered as outliers.}
 #' }
 #' @importFrom GSE GSE   getOutliers  getLocation  getScatter
 #' @importFrom MASS ginv
@@ -31,7 +34,7 @@
 #' # The data is contaminated uniformly (level 20%).
 #'
 #' ################################################
-#' #### Start data generatting process ############
+#' #### Start data generating process ############
 #' ##############################################
 #'
 #' # generates base clusters
@@ -82,38 +85,75 @@
 #' }
 #' points(X[ret$outliers,],pch=19)
 #'
+#' @references Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019). 
+#' Robust Clustering Using Tau-Scales. arXiv preprint arXiv:1906.08198. 
 #' @export
 
-improvedktaucenters=function(X,K,cutoff=0.999,nstart =5){
+improvedktaucenters=function(X,K,cutoff=0.999,nstart =5,INITcenters=NULL){
 
-  #### FIRST STEP: determine the best centers  #####
-  ret_ktau <- ktaucenters(X, K, nstart = nstart)
   n=dim(X)[1]
   p=dim(X)[2]
   sigmas <- vector(mode="list", length=K);
-  centers <- ret_ktau$centers
-  newcentersaux <- 0*ret_ktau$centers
+  centers=INITcenters
+  #### FIRST STEP: determine the best centers  #####
 
+  # if centers are not given, we calculate with ktaucenters routine
+  if (is.null(centers)){
+    ret_ktau <- ktaucenters(X, K, nstart = nstart)
+    centers <- ret_ktau$centers
+    newClusters<-ret_ktau$cluster
+  }
+  
+  #### if centers are given, we  just 
+  #### calculate the clusters from these centers. 
+  sphericalDistanceMatrix<- matrix(0, ncol = K, nrow = n)
+    if (!is.null(centers)){
+    for (j in 1:K){
+    sphericalDistanceMatrix[,j] <- mahalanobis(x=X,
+                                           center=centers[j, ]
+                                           ,cov=diag(p))
+      
+    }  
+    newClusters <- apply(sphericalDistanceMatrix, 1,
+                             function(x) which( x == min(x))[1])
+  }
+  
+  
+  newcentersaux <- 0*centers
   for (j in 1:K){
     sigmas[[j]] <- diag(p)
   }
 
 #=========== and SECOND STEP ========
 iter=0
-while(iter<2){
-    newClusters <- ret_ktau$cluster
-    newcenters <- centers;
+newcenters <- centers;
+while(iter<1){
     for (j in 1:K){
       Xcluster <- X[newClusters==j,];
       nk <- dim(Xcluster)[1];
-      Xcentered <- sweep(Xcluster, 2, centers[j,], FUN="-")
-      sal1 <- GSE(Xcentered, tol=1e-4, maxiter=150)
-      newcentersaux[j,] <- getLocation(sal1)+newcenters[j, ]
-      sigmas[[j]] <- getScatter(sal1)
+      
+      # dim works properly when there are two or more observations, for that reason: 
+      if (sum(newClusters==j)<2){
+        nk=sum(newClusters==j)
+        }
+      
+      # if there is enough observations, we proceed to compute 
+      # robust covarianze matrix 
+      if(nk>(3*p)){
+        #  Xcentered <- sweep(Xcluster, 2, centers[j,], FUN="-")
+          sal1 <- GSE(Xcluster, tol=1e-4, maxiter=150)
+          newcentersaux[j,] <- getLocation(sal1)
+          sigmas[[j]] <- getScatter(sal1)
+      }
+      # if there is not enough observations, we don't compute 
+      # robust covarianze matrix 
+      if(nk<=(3*p)){
+        newcentersaux[j,]= newcenters[j, ]
+      }
+      
     }
 
     mahalanobisMatrix <- matrix(0, ncol = K, nrow = n)
-
     for (j in 1:K){
       mahalanobisMatrix[,j] <- mahalanobis(x=X,
                                         center=newcentersaux[j, ]
@@ -125,7 +165,7 @@ while(iter<2){
                           function(x) which( x == min(x))[1])
     value <- qchisq(cutoff, df = p)
 
-    #IMPROVED
+    #IMPROVED oultiers determination. 
     outliers=c()
     for (j in 1:K){
       indices <- which(newClusters_Mah == j)
@@ -150,5 +190,5 @@ while(iter<2){
     iter <- iter + 1
   }
 
-  list(cluster=newClusters, centers=newcenters, outliers=outliers,sigmas=sigmas);
+  list(cluster=newClusters, centers=newcenters, outliers=outliers, sigmas=sigmas);
 }

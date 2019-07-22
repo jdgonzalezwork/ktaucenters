@@ -4,7 +4,8 @@
 \alias{improvedktaucenters}
 \title{improvedktaucenters}
 \usage{
-improvedktaucenters(X, K, cutoff = 0.999, nstart = 5)
+improvedktaucenters(X, K, cutoff = 0.999, nstart = 5,
+  INITcenters = NULL)
 }
 \arguments{
 \item{X}{numeric matrix  of size n x p.}
@@ -16,6 +17,9 @@ improvedktaucenters(X, K, cutoff = 0.999, nstart = 5)
 \item{nstart}{optional the number of trials that the base algorithm ktaucenters_aux is run
 at the first stage. #' If it is greater than 1 and center is not set as NULL,
 a random set of (distinct) rows in x is chosen as the initial centres for each try.}
+
+\item{INITcenters}{numeric matrix  of size K x p indicating the initial centers for that clusters and robust covarianze matrices will be 
+computed, if it is set as NULL the algorithm will compute @param INITcenters from ktaucenters routine. Set to NULL by default.}
 }
 \value{
 A list including the estimated K centers and clusters labels for the observations
@@ -24,9 +28,10 @@ A list including the estimated K centers and clusters labels for the observation
  \item{\code{cluster}}{: array of size n x 1  integers labels between 1 and K.}
  \item{\code{tauPath}}{: sequence of tau scale values at each iterations.}
  \item{\code{Wni}}{: numeric array of size n x 1 indicating the weights associated to each observation.}
- \item{\code{emptyClusterFlag}}{: a boolean value. True means that in some iteration there were clusters totally empty}
- \item{\code{niter}}{: number of iterations untill convergence is achived or maximun number of iteration is reached}
+ \item{\code{emptyClusterFlag}}{: a boolean value. True means that in some iteration there were clusters totally empty.}
+ \item{\code{niter}}{: number of iterations untill convergence is achived or maximun number of iteration is reached.}
  \item{\code{sigmas}}{: a list containing the k covariance matrices found by the procedure at its second step.}
+ \item{\code{outliers}}{: indices observation that can be considered as outliers.}
 }
 }
 \description{
@@ -40,7 +45,7 @@ different size, volume or orientation.
 # The data is contaminated uniformly (level 20\%).
 
 ################################################
-#### Start data generatting process ############
+#### Start data generating process ############
 ##############################################
 
 # generates base clusters
@@ -89,4 +94,8 @@ for (j in 1:3){
 }
 points(X[ret$outliers,],pch=19)
 
+}
+\references{
+Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019). 
+Robust Clustering Using Tau-Scales. arXiv preprint arXiv:1906.08198.
 }

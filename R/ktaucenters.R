@@ -62,6 +62,12 @@
 #' points(X[sal$cluster==2,],col=3);
 #' points(X[sal$cluster==3,],col=4)
 #'
+#' @references Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019). 
+#' Robust Clustering Using Tau-Scales. arXiv preprint arXiv:1906.08198. 
+#'
+#'
+#'
+#'
 #' @importFrom stats kmeans dist qchisq
 #' @export
 ktaucenters=function(X,K,centers=NULL,tolmin=1e-06,NiterMax=100,nstart=1,startWithKmeans=TRUE,startWithROBINPD=TRUE,cutoff=0.999){
@@ -124,11 +130,12 @@ ktaucenters=function(X,K,centers=NULL,tolmin=1e-06,NiterMax=100,nstart=1,startWi
 
   newClusters<-best_ret_ktau$cluster;
   squaredi <-(best_ret_ktau$di)^2;
+  robustScale=Mscale(u=sqrt(squaredi),b=0.5,c = normal_consistency_constants(p));
   outliers=c()
   value <- qchisq(cutoff, df = p)
   for (j in 1:K){
     indices <- which(newClusters == j)
-    booleansubindices <-squaredi[indices] > value
+    booleansubindices <-(squaredi[indices]/(robustScale^2)) > value
     outliersk <- indices[booleansubindices]
     outliers <- c(outliersk, outliers)
   }

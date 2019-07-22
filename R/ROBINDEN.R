@@ -60,7 +60,14 @@ ROBINDEN <- function(D,data,k,mp=10){
   # calculates the inverse density point.
   idp <-1/denpoints(D,k=mp)
   n <- nrow(data)
-  critRobin=sort(idp,decreasing = FALSE)[floor(.5*n)]; #median
+  
+  # Observation: 
+  # Outliers have a high idp value.
+  # In umbalanced cases and when K increases, all the observations from a group might be above the critRobin, 
+  # So we need to increase the critRobin in order to avoid two initials centers from the same group. 
+  vvv=max(0.5,0.96*(1-1.5/k));
+  critRobin=sort(idp,decreasing = FALSE)[floor(vvv*n)]; # vvv=0.5 implies critRobin= median(idp). 
+  
   # ORIGINAL r <-sample(n,1)
   # MODIFICATION: Start with a point whose its density is maximun
   r <-which(idp==min(idp))[1]

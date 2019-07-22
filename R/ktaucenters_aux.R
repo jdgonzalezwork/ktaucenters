@@ -38,6 +38,8 @@
 #' Some times, if the initial centers are wrong, the algorithm converges to a non-optimal (local) solution.
 #' To avoid that, the algorithm must be run several times. This task is carried out by \code{\link{ktaucenters}}
 #' @seealso \code{\link{ktaucenters}}
+#' @references Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019). 
+#' Robust Clustering Using Tau-Scales. arXiv preprint arXiv:1906.08198. 
 #' @export
 ktaucenters_aux=function(X,K,centers,tolmin,NiterMax){
   if (!is.matrix(centers)){

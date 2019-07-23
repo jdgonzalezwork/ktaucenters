@@ -1,6 +1,6 @@
 ---
 title: "ktaucenters package: Robust and efficient Clustering"
-author: "Juan Domingo Gonzalez, Victor Yohai, Ruben Zamar"
+author: "Juan D. Gonzalez, Victor J. Yohai, Ruben H. Zamar"
 date: "`r Sys.Date()`"
 output: html_document
 fig_caption: yes
@@ -15,9 +15,10 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.width=5, 
-  fig.height=5
-)
+  fig.height=5,
+  echo = TRUE)
 ```
+
 
 ## Introduction
 

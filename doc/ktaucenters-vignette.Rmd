@@ -2,7 +2,7 @@
 title: "ktaucenters package: Robust and efficient Clustering"
 author: "Juan Domingo Gonzalez, Victor Yohai, Ruben Zamar"
 date: "`r Sys.Date()`"
-output: html_document
+output: pdf_document
 fig_caption: yes
 vignette: >
   %\VignetteIndexEntry{Vignette Title}

@@ -1,13 +1,13 @@
 Package: ktaucenters
 Type: Package
-Title: Robust Clustering Procedures (K-means-like) suitable to data that contains outliers.
+Title: Robust Clustering Procedures (K-means-like) suitable to data that contains outliers
 Version: 0.1.0
 Authors@R: c(person("Juan Domingo", "Gonzalez", email = "juanrst@hotmail.com", role = c("cre","aut")),
              person("Victor", "Yohai", email = "victoryohai@gmail.com", role = "aut"),
              person("Ruben", "Zamar", email = "ruben@stat.ubc.ca", role = "aut")
     ) 
 Maintainer: Juan Domingo Gonzalez <juanrst@hotmail.com>
-Description:This package implements a kind of kmeans algorithm, it has two main advantages:(a) The estimator is resistant to outliers, that means that results of estimator are still correct when there are atipycal values in the sample and (b) The estimator is efficient, roughly speaking, if there are not outliers in the sample (all data is good), results will be similar than those obtained by a classic algorithm (kmeans). Clustering procedure is carried out by minimizing the overall robust scale so-called tau scale. (see Yohai and Zamar, 1988, [doi:10.1080/01621459.1988.10478611]<https://www.tandfonline.com/doi/abs/10.1080/01621459.1988.10478611> and Gonzalez, Yohai and Zamar (2019) [arxiv:1906.08198]<https://arxiv.org/abs/1906.08198>).  
+Description:This package implements a clustering algorithm similar to kmeans, it has two main advantages:(a) The estimator is resistant to outliers, that means that results of estimator are still correct when there are atipycal values in the sample and (b) The estimator is efficient, roughly speaking, if there are not outliers in the sample (all data is good), results will be similar than those obtained by a classic algorithm (kmeans). Clustering procedure is carried out by minimizing the overall robust scale so-called tau scale. (see Yohai and Zamar  (1988), [doi:10.1080/01621459.1988.10478611]<https://bit.ly/2Oal7C4>   Gonzalez, Yohai and Zamar (2019) [arxiv:1906.08198]<https://arxiv.org/abs/1906.08198>).  
 License: GPL (>= 2)
 Encoding: UTF-8
 Depends: R (>= 2.10), MASS, methods, dplyr, dbscan, stats, GSE
@@ -15,7 +15,8 @@ LazyData: true
 RoxygenNote: 6.1.1
 Suggests: 
     jpeg,
-    tclust
+    tclust,
+    knitr
 VignetteBuilder: knitr
-References: Gonzalez, Yohai and Zamar (2019) <arxiv:https://arxiv.org/abs/1906.08198>.
+References: Gonzalez, Yohai and Zamar (2019) <arxiv:https://arxiv.org/abs/1906.08198>
 

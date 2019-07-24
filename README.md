@@ -1,12 +1,3 @@
----
-title: 'ktaucenters package: Robust and efficient Clustering'
-author: "Juan D. Gonzalez, Victor J. Yohai, Ruben H. Zamar"
-date: '2019-07-23'
-generator: pandoc
-viewport: width=device-width, initial-scale=1
----
-
-
 # ktaucenters package: Robust and efficient Clustering 
 ====================================================
 
@@ -70,7 +61,7 @@ legend(-6,6,pch=c(19,17),col=c(2,3),cex=1,legend=c("ktau centers" ,"kmeans cente
 ```
 
 
-![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure1.png = 0.5x)
+![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure1.png)
 {.figure}
 Clean data. Estimated centers by K-means and KTAU-centers algorithms
 {width="480"}
@@ -102,7 +93,7 @@ points(ktau_output$centers,pch=19,col=2,cex=2)
 points(kmeans_output$centers,pch=17,col=3,cex=2)
 legend(-10,10,pch=c(19,17),col=c(2,3),cex=1,legend=c("ktau centers" ,"kmeans centers"))
 ```
-![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure2.png = 0.5x)
+![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure2.png)
 Contaminated data. Estimated centers by K-means and KTAU-centers
 algorithms. 
 
@@ -134,7 +125,7 @@ legend(7,15,pch=c(1,1,1,19),col=c(2,3,4,1),cex=1,
        legend=c("cluster 1" ,"cluster 2","cluster 3","detected \n outliers"),bg = "gray")
 ```
 The final figure contains clusters and outliers detected. 
-![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure3.png = 0.5x)
+![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure3.png)
 
 
 # Improved-ktaucenters 
@@ -179,8 +170,8 @@ If we want to know the values of outliers, type
 
 By using these commands, it is easy to estimate the original clusters by
 means of `improvedktaucenters` routine.
-![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure4a.png =250x)
-![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure4b.png =3x)
+![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure4a.png)
+![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure4b.png)
 
 
 # Real data application: finding a screw in Mars
@@ -248,63 +239,9 @@ points(B[screw_candidate_index,1],B[screw_candidate_index,2],col=6,pch=1,cex=3,l
 ![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure5.png)
 Plot of Geographic sub matrices, pink circles are
 the outliers candidates in the geographic matix
-space.](){width="576"}
+space.
 
-The images corresponding to the three chanels are quite similar, this is
-because the RGB pixels values are usually highly correlated. On the
-other hand, if we want to rebuild the data-set from the original
-picture, the following code can be used.
 
-``` {.r}
-# To reconstruct the data from source image. 
-XXX=cbind(myjpg[,,1],myjpg[,,2],myjpg[,,3])
-# define functions Intensity and saturation 
-Icolor=function(COLOR){((COLOR[1]+COLOR[2]+COLOR[3]))/3}
-Scolor=function(COLOR){
-  Iaux=Icolor(COLOR)
-  ret=0
-  if(!(Iaux==0)){ret=1 - min(COLOR[1],COLOR[2],COLOR[3])/Iaux}
-  if(Iaux==0){ret=0}
-  ret
-}
-
-I=apply(XXX,1,Icolor)
-S=apply(XXX,1,Scolor)
-
-myjpgHSI=myjpg
-myjpgHSI[,,2]=S
-myjpgHSI[,,3]=I
-scomp=myjpgHSI[,,2];
-icomp=myjpgHSI[,,3];
-d=8
-p=d^2
-nrowIm=dim(myjpg)[1] 
-ncolIm=dim(myjpg)[2] 
-NporM=ncolIm*nrowIm
-
-# transforming each d-square cell into an array of size 2*dxd
-A=matrix(0,ncol=2*p,nrow=NporM/p)
-B=matrix(0,ncol=2,nrow=NporM/p)
-l=1;
-for (i in 1:(nrowIm/d)){
-  for (j in 1:(ncolIm/d)){
-    posi=(i-1)*d;
-    posj=(j-1)*d;
-    auxs=scomp[posi+(1:d), posj +(1:d)];
-    auxi=icomp[posi+(1:d), posj +(1:d)];
-    A[l,]=c(auxs[,],auxi[,])
-    B[l,]=c(i,j)
-    l=l+1;
-  }
-}
-
-A=A[1:(l-1),]
-```
-
-This is a check whether A and mars\_screw\$SI\_matrix are equal
-
-``` {.r}
-mean(abs(A-mars_screw$SI_matrix))==0
-#> [1] FALSE
-```
+For more information about this particular application see Gonzalez, Yohai and Zamar 2019
+[arxiv:1906.08198](https://arxiv.org/abs/1906.08198)).
 

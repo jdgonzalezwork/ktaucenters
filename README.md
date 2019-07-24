@@ -242,6 +242,6 @@ the outliers candidates in the geographic matix
 space.
 
 
-For more information about this particular application see Gonzalez, Yohai and Zamar 2019
-[arxiv:1906.08198](https://arxiv.org/abs/1906.08198)).
+For more information about this particular application see  and Gonzalez, Yohai and Zamar 2019
+[arxiv:1906.08198](https://arxiv.org/abs/1906.08198)). 
 

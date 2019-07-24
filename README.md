@@ -19,9 +19,7 @@ two main advantages:
     than those obtained by a classic algorithm (kmeans)
 
 Clustering procedure is carried out by minimizing the overall robust
-scale so-called tau scale (see Yohai and Zamar, 1988,
-[doi:10.1080/01621459.1988.10478611](https://www.tandfonline.com/doi/abs/10.1080/01621459.1988.10478611)
-and Gonzalez, Yohai and Zamar 2019
+scale so-called tau scale (see Yohai Gonzalez, Yohai and Zamar 2019
 [arxiv:1906.08198](https://arxiv.org/abs/1906.08198)).
 
 

@@ -170,8 +170,9 @@ If we want to know the values of outliers, type
 
 By using these commands, it is easy to estimate the original clusters by
 means of `improvedktaucenters` routine.
+
 ![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure4a.png)
-![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure4b.png)
+
 
 
 # Real data application: finding a screw in Mars
@@ -242,6 +243,8 @@ the outliers candidates in the geographic matix
 space.
 
 
-For more information about this particular application see  and Gonzalez, Yohai and Zamar 2019
-[arxiv:1906.08198](https://arxiv.org/abs/1906.08198)). 
+For more information about this particular application see  the vignette [ktaucenters_vignette.pdf](https://github.com/jdgonzalezwork/ktaucenters/blob/master/ktaucenters_vignette.pdf) and Gonzalez, Yohai and Zamar 2019 [arxiv:1906.08198](https://arxiv.org/abs/1906.08198)). 
+
+The paper [arxiv:1906.08198](https://arxiv.org/abs/1906.08198)) contains comparision with other robust clustering procedures as well as technical details.  
+
 

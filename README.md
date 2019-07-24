@@ -179,8 +179,8 @@ If we want to know the values of outliers, type
 
 By using these commands, it is easy to estimate the original clusters by
 means of `improvedktaucenters` routine.
-![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure4a.png =0.5x)
-![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure4b.png =0.5x)
+![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure4a.png =250x)
+![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure4b.png =3x)
 
 
 # Real data application: finding a screw in Mars
@@ -245,7 +245,7 @@ for (j in 1:3){
 }
 points(B[screw_candidate_index,1],B[screw_candidate_index,2],col=6,pch=1,cex=3,lwd=3)
 ```
-![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure5.png =0.5x)
+![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure5.png)
 Plot of Geographic sub matrices, pink circles are
 the outliers candidates in the geographic matix
 space.](){width="576"}

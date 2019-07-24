@@ -70,7 +70,7 @@ legend(-6,6,pch=c(19,17),col=c(2,3),cex=1,legend=c("ktau centers" ,"kmeans cente
 ```
 
 
-![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure1.png)
+![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure1.png = 0.5x)
 {.figure}
 Clean data. Estimated centers by K-means and KTAU-centers algorithms
 {width="480"}
@@ -102,7 +102,7 @@ points(ktau_output$centers,pch=19,col=2,cex=2)
 points(kmeans_output$centers,pch=17,col=3,cex=2)
 legend(-10,10,pch=c(19,17),col=c(2,3),cex=1,legend=c("ktau centers" ,"kmeans centers"))
 ```
-![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure2.png)
+![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure2.png = 0.5x)
 Contaminated data. Estimated centers by K-means and KTAU-centers
 algorithms. 
 
@@ -134,7 +134,7 @@ legend(7,15,pch=c(1,1,1,19),col=c(2,3,4,1),cex=1,
        legend=c("cluster 1" ,"cluster 2","cluster 3","detected \n outliers"),bg = "gray")
 ```
 The final figure contains clusters and outliers detected. 
-![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure2.png)
+![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure3.png = 0.5x)
 
 
 # Improved-ktaucenters 
@@ -179,8 +179,9 @@ If we want to know the values of outliers, type
 
 By using these commands, it is easy to estimate the original clusters by
 means of `improvedktaucenters` routine.
-IT REMAINS TO add figure 4a  and 4b 
-![]
+![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure4a.png =0.5x)
+![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure4b.png =0.5x)
+
 
 # Real data application: finding a screw in Mars
 ----------------------------------------------
@@ -244,9 +245,8 @@ for (j in 1:3){
 }
 points(B[screw_candidate_index,1],B[screw_candidate_index,2],col=6,pch=1,cex=3,lwd=3)
 ```
-IT REMAINS TO add figure 5
-::: {.figure style="text-align: center"}
-![\\label{fig:fig3} Plot of Geographic sub matrices, pink circles are
+![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure5.png =0.5x)
+Plot of Geographic sub matrices, pink circles are
 the outliers candidates in the geographic matix
 space.](){width="576"}
 

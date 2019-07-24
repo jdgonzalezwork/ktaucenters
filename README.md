@@ -70,7 +70,7 @@ legend(-6,6,pch=c(19,17),col=c(2,3),cex=1,legend=c("ktau centers" ,"kmeans cente
 ```
 
 
-![alt text](https://github.com/jdgonzalezwork/ktaucenters/imagesPNG/figure1.png)
+![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure1.png)
 {.figure}
 Clean data. Estimated centers by K-means and KTAU-centers algorithms
 {width="480"}
@@ -95,29 +95,23 @@ ktau_output <- ktaucenters(X, K=3,nstart=10)
 ### Applying the classic algortihm  ####
 kmeans_output <- kmeans(X,centers=3,nstart=10)
 ```
-
-``` {.r}
-### plotting the estimated centers 
+plotting the estimated centers
+``` {.r}  
 plot(X,main=" Robustness ")
 points(ktau_output$centers,pch=19,col=2,cex=2)
 points(kmeans_output$centers,pch=17,col=3,cex=2)
 legend(-10,10,pch=c(19,17),col=c(2,3),cex=1,legend=c("ktau centers" ,"kmeans centers"))
 ```
-
-::: {.figure style="text-align: center"} IT REMAINS TO add figure 2
-![\\label{fig:fig2} Contaminated data. Estimated centers by K-means and
-KTAU-centers
-algorithms.](){width="480"}
-
+![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure2.png)
 Contaminated data. Estimated centers by K-means and KTAU-centers
-algorithms.
-:::
+algorithms. 
+
+
 
 As it can be observed in Figure kmeans center were very influenced by
 outliers, while ktaucenters results are still razonable.
-:::
 
-::: {#example-3-showing-clusters-and-outliers-detection-procedure .section .level3}
+
 ### Example 3: Showing clusters and outliers detection procedure
 
 Continuation from Example 2, for outliers recognition purposes we can
@@ -139,8 +133,8 @@ points(X[ktau_output$outliers, ], pch=19, col=1, cex=1)
 legend(7,15,pch=c(1,1,1,19),col=c(2,3,4,1),cex=1,
        legend=c("cluster 1" ,"cluster 2","cluster 3","detected \n outliers"),bg = "gray")
 ```
-IT REMAINS TO add figure 3
-![](){width="480"}
+The final figure contains clusters and outliers detected. 
+![alt text](https://github.com/jdgonzalezwork/ktaucenters/blob/master/imagesPNG/figure2.png)
 
 
 # Improved-ktaucenters 

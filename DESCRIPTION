@@ -22,6 +22,7 @@ Depends: R (>= 2.10), MASS, methods, dplyr, dbscan, stats, GSE
 LazyData: true
 RoxygenNote: 6.1.1
 Suggests: jpeg, tclust, knitr
+VignetteBuilder: knitr
 NeedsCompilation: no
 Packaged: 2019-08-02 16:37:50 UTC; juan
 Repository: CRAN

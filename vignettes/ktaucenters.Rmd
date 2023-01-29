@@ -2,10 +2,9 @@
 title: "ktaucenters package: Robust and efficient Clustering"
 author: "Juan D. Gonzalez, Victor J. Yohai, Ruben H. Zamar"
 date: "`r Sys.Date()`"
-output: pdf_document
-fig_caption: yes
+output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{ktaucenters package: Robust and efficient Clustering}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -19,13 +18,12 @@ knitr::opts_chunk$set(
   echo = TRUE)
 ```
 
-
 ## Introduction
 
 This package implements a clustering algorithm similar to kmeans, it has two main advantages:
 
 * The estimator is resistant to outliers, that means that 
-results of estimator are still correct when there are atipycal values in the sample.  
+results of estimator are still correct when there are atypical values in the sample.  
 
 * The estimator is efficient, roughly speaking, if there are not outliers in the sample (all data is good), results will be similar than those obtained by a classic algorithm (kmeans)
 
@@ -67,7 +65,7 @@ points(kmeans_output$centers,pch=17,col=3,cex=2)
 legend(-6,6,pch=c(19,17),col=c(2,3),cex=1,legend=c("ktau centers" ,"kmeans centers"))
 ```
 
-Figure \ref{fig:fig1} shows that there are no differeces between kmeans and ktaucenters in clean data.    
+Figure \ref{fig:fig1} shows that there are no differences between kmeans and ktaucenters in clean data.    
 
 ### Example 2:  behavior in the presence of outliers 
 We contaminate the previous data by replacing 60 observations to outliers located in a bounding box that contains 
@@ -294,7 +292,7 @@ myjpgB[,,1]=myjpgB[,,2]=0
 rasterImage(myjpgB, 1, 1, 2, 2)
 ```
 
-The images corresponding to the three chanels are quite similar, this is because the RGB pixels values are usually highly correlated. On the other hand, if we want to rebuild the data-set from the original picture, the following code can be used.   
+The images corresponding to the three channels are quite similar, this is because the RGB pixels values are usually highly correlated. On the other hand, if we want to rebuild the data-set from the original picture, the following code can be used.   
 
 ```{r,echo=TRUE,fig.show='hold',fig.height = 6 , fig.width = 6}
 # To reconstruct the data from source image. 

@@ -72,7 +72,7 @@
 #' #############################################
 #' ### plotting results ########################
 #' #############################################
-#' par(mfrow=c(2,1))
+#' oldpar=par(mfrow=c(2,1))
 #' #' plot(X,main="actual clusters")
 #' for (j in 1:3){
 #'  points(X[true.cluster==j,],pch=19, col=j+1)
@@ -84,7 +84,8 @@
 #'  points(X[ret$cluster==j,],pch=19, col=j+1)
 #' }
 #' points(X[ret$outliers,],pch=19)
-#'
+#' 
+#' par(oldpar)
 #' @references Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019). 
 #' Robust Clustering Using Tau-Scales. arXiv preprint arXiv:1906.08198. 
 #' @export

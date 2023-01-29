@@ -25,7 +25,7 @@ Mscale <- function(u, b=0.5, c){
   #' Mscale(u=rnorm(100),c=1)
   #'
   #' @importFrom stats median
-  #' @references Maronna, R. A., Martin, R. D., Yohai, V. J., & Salibián-Barrera, M. (2018).
+  #' @references Maronna, R. A., Martin, R. D., Yohai, V. J., & Salibian-Barrera, M. (2018).
   #' Robust statistics: theory and methods (with R). Wiley.
   #' @export
   sn <- median(abs(u)) / .6745

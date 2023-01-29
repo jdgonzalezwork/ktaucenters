@@ -44,9 +44,9 @@
 #'      tolmin=1e-3, NiterMax=100)
 #'
 #' #### plotting  the clusters####
-#' par(mfrow = c(1,1));
 #'
-#' par(mfrow = c(1,2))
+#' oldpar=par(mfrow = c(1,2))
+#' 
 #' plot(X,type = "n", main = "ktaucenters (Robust) \n outliers: solid black dots")
 #' points(X[sal$cluster==1,],col=2);
 #' points(X[sal$cluster==2,],col=3);
@@ -62,6 +62,7 @@
 #' points(X[sal$cluster==2,],col=3);
 #' points(X[sal$cluster==3,],col=4)
 #'
+#' par(oldpar)
 #' @references Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019). 
 #' Robust Clustering Using Tau-Scales. arXiv preprint arXiv:1906.08198. 
 #'

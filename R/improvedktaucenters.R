@@ -73,7 +73,7 @@
 #' ### plotting results ########################
 #' #############################################
 #' oldpar=par(mfrow=c(2,1))
-#' #' plot(X,main="actual clusters")
+#' plot(X,main="actual clusters")
 #' for (j in 1:3){
 #'  points(X[true.cluster==j,],pch=19, col=j+1)
 #' }

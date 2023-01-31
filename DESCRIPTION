@@ -13,17 +13,19 @@ Maintainer: Juan Domingo Gonzalez <juanrst@hotmail.com>
 Description: A clustering algorithm similar to K-Means is implemented, it has two main advantages, 
     namely (a) The estimator is resistant to outliers, that means that results of estimator are still correct when
     there are atypical values in the sample and (b) The estimator is efficient, roughly speaking, 
-    if there are no outliers in the sample, results will be similar than those obtained by a classic algorithm (K-Means).
+    if there are no outliers in the sample, results will be similar to those obtained by a classic algorithm (K-Means).
     Clustering procedure is carried out by minimizing the overall robust scale so-called tau scale.
-    (see Gonzalez, Yohai and Zamar (2019) <arxiv:1906.08198>).  
-License: GPL (>= 2)
+    (see Gonzalez, Yohai and Zamar (2019) <arxiv:1906.08198>).
+References: Gonzalez J.D, Yohai V., and Zamar R. (2019) <arxiv:https://arxiv.org/abs/1906.08198>
+License: GPL (>= 2) + file LICENSE
+SystemRequirements: C++14
 Encoding: UTF-8
 Depends: R (>= 2.10), MASS, methods, dplyr, dbscan, stats, GSE
+Language: en-US
+Imports: Rcpp (>= 1.0.9)
+LinkingTo: Rcpp
 LazyData: true
-RoxygenNote: 6.1.1
-Suggests: jpeg, tclust, knitr, rmarkdown
+RoxygenNote: 7.2.1
+Suggests: jpeg, tclust, knitr, rmarkdown, testthat (>= 3.1.0)
 VignetteBuilder: knitr
-NeedsCompilation: no
-Packaged: 2019-08-02 16:37:50 UTC; juan
-Repository: CRAN
-Date/Publication: 2019-08-03 08:20:02 UTC
+Config/testthat/edition: 3

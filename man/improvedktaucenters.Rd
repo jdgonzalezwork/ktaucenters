@@ -4,8 +4,7 @@
 \alias{improvedktaucenters}
 \title{improvedktaucenters}
 \usage{
-improvedktaucenters(X, K, cutoff = 0.999, nstart = 5,
-  INITcenters = NULL)
+improvedktaucenters(X, K, cutoff = 0.999, nstart = 5, INITcenters = NULL)
 }
 \arguments{
 \item{X}{numeric matrix  of size n x p.}
@@ -82,7 +81,7 @@ ret=improvedktaucenters(X,K=3,cutoff=0.999)
 #############################################
 ### plotting results ########################
 #############################################
-par(mfrow=c(2,1))
+oldpar=par(mfrow=c(2,1))
 #' plot(X,main="actual clusters")
 for (j in 1:3){
  points(X[true.cluster==j,],pch=19, col=j+1)
@@ -94,6 +93,7 @@ for (j in 1:3){
 }
 points(X[ret$outliers,],pch=19)
 
+par(oldpar)
 }
 \references{
 Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019). 

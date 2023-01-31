@@ -48,12 +48,10 @@ ktaucenters <- function(x,
   if (length(centers) == 1L) {
     n_clusters <- centers
     ## To avoid duplicates
-    if (nstart >= 2L) {
-      unique_x <- unique(x)
-      n_unique <- nrow(unique_x)
-      if (n_unique < n_clusters)
-        stop("more cluster centers than distinct data points.")
-    }
+    unique_x <- unique(x)
+    n_unique <- nrow(unique_x)
+    if (n_unique < n_clusters)
+      stop("more cluster centers than distinct data points.")
   } else {
     centers <- as.matrix(centers)
     

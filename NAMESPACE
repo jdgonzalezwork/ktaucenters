@@ -2,7 +2,11 @@
 
 export(improvedktaucenters)
 export(ktaucenters)
+export(rho_opt)
 export(robinden)
+import(dbscan)
+import(dplyr)
+import(methods)
 importFrom(GSE,GSE)
 importFrom(GSE,getLocation)
 importFrom(GSE,getOutliers)

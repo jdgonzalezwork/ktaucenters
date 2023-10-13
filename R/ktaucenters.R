@@ -9,7 +9,6 @@
 #' @param max_iter the maximum number of iterations allowed.
 #' @param max_tol maximum tolerance parameter used for the algorithm as stopping rule.
 #' @param cutoff quantile of chi-square distribution to be used as a threshold for outliers detection, defaults to 0.999
-
 #' @return A list including the estimated k centers and labels for the observations
 ##' \itemize{
 ##'  \item{\code{centers}}{:   matrix of size K x p, with the estimated K centers.}
@@ -23,6 +22,7 @@
 ##' or maximun number of iteration is reached}
 ##'  \item{\code{di}}{: distance of each observation to its assigned cluster-center}
 ##'  \item{\code{outliers}}{: indices observation that can be considered as outliers}
+##' }
 #' @references Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019).
 #' Robust Clustering Using Tau-Scales. arXiv preprint arXiv:1906.08198.
 #'

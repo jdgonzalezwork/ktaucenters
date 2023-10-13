@@ -27,22 +27,4 @@ mars_screw
 A dataset containing the Intensity and Saturation values of a picture from Mars
 taken from Rover Curiosity.
 }
-\examples{
-
-# upload matrix 
-A <- mars_screw$SI_matrix;
-B <- mars_screw$geographic_matrix
-screw_index <- mars_screw$screw_index
-## looking for the brightest cells
-maximun_at_each_cell<- apply(A[ ,1:64], 1, max)
-ten_brightest_cells <-order(maximun_at_each_cell, decreasing=TRUE)[1:10]
-
-## plot locations where the ten brightest cells are.
-plot(B, pch=19 )
-points(B[ten_brightest_cells, ], pch=19,col="yellow" )
-
-## plot locations where the screw are.
-points(B[screw_index, ], pch=19,col="blue" )
-
-}
 \keyword{datasets}

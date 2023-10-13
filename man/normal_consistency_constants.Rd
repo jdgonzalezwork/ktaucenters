@@ -15,7 +15,7 @@ tuning constant.
 \description{
 M scale tuning constants so it is consistent with the standard
 normal distribution for the quasi optimal \eqn{\rho} function used in
-\code{\link{rho_opt}}. These constants were computed for 1 \eqn{\leq} p
+\code{\link{rhoOpt}}. These constants were computed for 1 \eqn{\leq} p
 \eqn{\leq} 400.
 }
 \references{

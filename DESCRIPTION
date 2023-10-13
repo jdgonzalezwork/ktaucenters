@@ -1,7 +1,7 @@
 Package: ktaucenters
 Type: Package
 Title: Robust Clustering Procedures
-Version: 1.0.0
+Version: 0.2.0
 Author: Juan Domingo Gonzalez [cre, aut],
   Victor J. Yohai [aut],
   Ruben H. Zamar [aut]
@@ -16,16 +16,14 @@ Description: A clustering algorithm similar to K-Means is implemented, it has tw
     if there are no outliers in the sample, results will be similar to those obtained by a classic algorithm (K-Means).
     Clustering procedure is carried out by minimizing the overall robust scale so-called tau scale.
     (see Gonzalez, Yohai and Zamar (2019) <arxiv:1906.08198>).
-References: Gonzalez J.D, Yohai V., and Zamar R. (2019) <arxiv:https://arxiv.org/abs/1906.08198>
-License: GPL (>= 2) + file LICENSE
-SystemRequirements: C++14
+License: GPL (>= 2)
 Encoding: UTF-8
 Depends: R (>= 2.10), MASS, methods, dplyr, dbscan, stats, GSE
 Language: en-US
 Imports: Rcpp (>= 1.0.9)
 LinkingTo: Rcpp
 LazyData: true
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Suggests: jpeg, tclust, knitr, rmarkdown, testthat (>= 3.1.0)
 VignetteBuilder: knitr
 Config/testthat/edition: 3

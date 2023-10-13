@@ -9,7 +9,7 @@ using namespace Rcpp;
 //'
 //' M scale tuning constants so it is consistent with the standard
 //' normal distribution for the quasi optimal \eqn{\rho} function used in
-//' \code{\link{rho_opt}}. These constants were computed for 1 \eqn{\leq} p
+//' \code{\link{rhoOpt}}. These constants were computed for 1 \eqn{\leq} p
 //' \eqn{\leq} 400.
 //'
 //' @param p dimension where observation lives.
@@ -129,13 +129,13 @@ double mscale(NumericVector u, const double c, const double b) {
   if (sn == 0)
     return sn;
 
-  double diff = mean(rho_opt(u / sn, c)) - b;
+  double diff = mean(rhoOpt(u / sn, c)) - b;
   if (fabs(diff) <= max_error_diff)
     return sn;
 
   while (diff > 0.0) {
     sn = 1.5 * sn;
-    diff = mean(rho_opt(u / sn, c)) - b;
+    diff = mean(rhoOpt(u / sn, c)) - b;
   }
 
   unsigned int i = 0;
@@ -144,8 +144,8 @@ double mscale(NumericVector u, const double c, const double b) {
   NumericVector var(no_init(u.size()));
   while ((i < 1000) & (error > max_error_diff)) {
     var = u / sn;
-    Fk = mean(rho_opt(var, c));
-    Gk = mean(psi_opt(var, c) * var);
+    Fk = mean(rhoOpt(var, c));
+    Gk = mean(psiOpt(var, c) * var);
     factor = (Fk - Gk - b) / (2.0 * Fk - Gk - 2.0 * b);
     error = fabs(factor - 1);
     sn = sn * fabs(factor);
@@ -167,7 +167,7 @@ double mscale(NumericVector u, const double c, const double b) {
 //'
 // [[Rcpp::export]]
 double tau_scale(NumericVector u, const double c, const double s) {
-  return s * sqrt(mean(rho_opt(u / s, c)));
+  return s * sqrt(mean(rhoOpt(u / s, c)));
 }
 
 //' Weight function
@@ -186,11 +186,11 @@ NumericVector wni(NumericVector distances, const double c1, const double c2,
                   const double s) {
 
   NumericVector dnor = distances / s;
-  const double A = sum(2 * rho_opt(dnor, c2) - psi_opt(dnor, c2) * dnor);
-  const double B = sum(psi_opt(dnor, c1) * dnor);
+  const double A = sum(2 * rhoOpt(dnor, c2) - psiOpt(dnor, c2) * dnor);
+  const double B = sum(psiOpt(dnor, c1) * dnor);
   return ifelse(dnor == 0.0,
                 (A / (3.25 * pow(c1, 2))) + (B / (3.25 * pow(c2, 2))),
-                (A * psi_opt(dnor, c1) + B * psi_opt(dnor, c2)) / dnor);
+                (A * psiOpt(dnor, c1) + B * psiOpt(dnor, c2)) / dnor);
 }
 
 //' Weight factor

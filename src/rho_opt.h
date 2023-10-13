@@ -4,8 +4,8 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-NumericVector rho_opt(NumericVector, const double);
-NumericVector psi_opt(NumericVector, const double);
-NumericVector derpsi_opt(NumericVector, const double);
+NumericVector rhoOpt(NumericVector, const double);
+NumericVector psiOpt(NumericVector, const double);
+NumericVector derpsiOpt(NumericVector, const double);
 
 #endif

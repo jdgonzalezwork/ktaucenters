@@ -18,7 +18,7 @@ using namespace Rcpp;
 //'
 //'@export
 // [[Rcpp::export]]
-NumericVector rho_opt(NumericVector x, const double c) {
+NumericVector rhoOpt(NumericVector x, const double c) {
   NumericVector out(no_init(x.size()));
 
   NumericVector::iterator out_it = out.begin();
@@ -47,8 +47,9 @@ NumericVector rho_opt(NumericVector x, const double c) {
 //' Numeric vector with the derivative of the quasi optimal \eqn{\rho}
 //' computation for each element of x.
 //'
+//'@export
 // [[Rcpp::export]]
-NumericVector psi_opt(NumericVector x, const double c) {
+NumericVector psiOpt(NumericVector x, const double c) {
   NumericVector out(no_init(x.size()));
 
   NumericVector::iterator out_it = out.begin();
@@ -78,8 +79,9 @@ NumericVector psi_opt(NumericVector x, const double c) {
 //' Numeric vector with the second derivative of the quasi optimal \eqn{\rho}
 //' computation for each element of x.
 //'
+//'@export
 // [[Rcpp::export]]
-NumericVector derpsi_opt(NumericVector x, double c) {
+NumericVector derpsiOpt(NumericVector x, double c) {
   NumericVector out(no_init(x.size()));
 
   NumericVector::iterator out_it = out.begin();

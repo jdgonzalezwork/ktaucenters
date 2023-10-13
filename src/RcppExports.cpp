@@ -84,39 +84,39 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// rho_opt
-NumericVector rho_opt(NumericVector x, const double c);
-RcppExport SEXP _ktaucenters_rho_opt(SEXP xSEXP, SEXP cSEXP) {
+// rhoOpt
+NumericVector rhoOpt(NumericVector x, const double c);
+RcppExport SEXP _ktaucenters_rhoOpt(SEXP xSEXP, SEXP cSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
     Rcpp::traits::input_parameter< const double >::type c(cSEXP);
-    rcpp_result_gen = Rcpp::wrap(rho_opt(x, c));
+    rcpp_result_gen = Rcpp::wrap(rhoOpt(x, c));
     return rcpp_result_gen;
 END_RCPP
 }
-// psi_opt
-NumericVector psi_opt(NumericVector x, const double c);
-RcppExport SEXP _ktaucenters_psi_opt(SEXP xSEXP, SEXP cSEXP) {
+// psiOpt
+NumericVector psiOpt(NumericVector x, const double c);
+RcppExport SEXP _ktaucenters_psiOpt(SEXP xSEXP, SEXP cSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
     Rcpp::traits::input_parameter< const double >::type c(cSEXP);
-    rcpp_result_gen = Rcpp::wrap(psi_opt(x, c));
+    rcpp_result_gen = Rcpp::wrap(psiOpt(x, c));
     return rcpp_result_gen;
 END_RCPP
 }
-// derpsi_opt
-NumericVector derpsi_opt(NumericVector x, double c);
-RcppExport SEXP _ktaucenters_derpsi_opt(SEXP xSEXP, SEXP cSEXP) {
+// derpsiOpt
+NumericVector derpsiOpt(NumericVector x, double c);
+RcppExport SEXP _ktaucenters_derpsiOpt(SEXP xSEXP, SEXP cSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
     Rcpp::traits::input_parameter< double >::type c(cSEXP);
-    rcpp_result_gen = Rcpp::wrap(derpsi_opt(x, c));
+    rcpp_result_gen = Rcpp::wrap(derpsiOpt(x, c));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -291,9 +291,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_ktaucenters_dist_to_kNN", (DL_FUNC) &_ktaucenters_dist_to_kNN, 2},
     {"_ktaucenters_ktaucenters_run", (DL_FUNC) &_ktaucenters_ktaucenters_run, 4},
     {"_ktaucenters_flag_outliers", (DL_FUNC) &_ktaucenters_flag_outliers, 3},
-    {"_ktaucenters_rho_opt", (DL_FUNC) &_ktaucenters_rho_opt, 2},
-    {"_ktaucenters_psi_opt", (DL_FUNC) &_ktaucenters_psi_opt, 2},
-    {"_ktaucenters_derpsi_opt", (DL_FUNC) &_ktaucenters_derpsi_opt, 2},
+    {"_ktaucenters_rhoOpt", (DL_FUNC) &_ktaucenters_rhoOpt, 2},
+    {"_ktaucenters_psiOpt", (DL_FUNC) &_ktaucenters_psiOpt, 2},
+    {"_ktaucenters_derpsiOpt", (DL_FUNC) &_ktaucenters_derpsiOpt, 2},
     {"_ktaucenters_point_density", (DL_FUNC) &_ktaucenters_point_density, 2},
     {"_ktaucenters_robin_center", (DL_FUNC) &_ktaucenters_robin_center, 3},
     {"_ktaucenters_robinden", (DL_FUNC) &_ktaucenters_robinden, 3},

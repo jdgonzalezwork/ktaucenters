@@ -233,16 +233,17 @@ BEGIN_RCPP
 END_RCPP
 }
 // new_centers
-NumericMatrix new_centers(NumericMatrix x, NumericVector weights, IntegerVector clusters, NumericVector distances);
-RcppExport SEXP _ktaucenters_new_centers(SEXP xSEXP, SEXP weightsSEXP, SEXP clustersSEXP, SEXP distancesSEXP) {
+NumericMatrix new_centers(NumericMatrix x, NumericVector weights, IntegerVector cluster_location, const std::size_t n_clusters, NumericVector distances);
+RcppExport SEXP _ktaucenters_new_centers(SEXP xSEXP, SEXP weightsSEXP, SEXP cluster_locationSEXP, SEXP n_clustersSEXP, SEXP distancesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericMatrix >::type x(xSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type weights(weightsSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type clusters(clustersSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type cluster_location(cluster_locationSEXP);
+    Rcpp::traits::input_parameter< const std::size_t >::type n_clusters(n_clustersSEXP);
     Rcpp::traits::input_parameter< NumericVector >::type distances(distancesSEXP);
-    rcpp_result_gen = Rcpp::wrap(new_centers(x, weights, clusters, distances));
+    rcpp_result_gen = Rcpp::wrap(new_centers(x, weights, cluster_location, n_clusters, distances));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -302,7 +303,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_ktaucenters_tau_scale", (DL_FUNC) &_ktaucenters_tau_scale, 3},
     {"_ktaucenters_wni", (DL_FUNC) &_ktaucenters_wni, 4},
     {"_ktaucenters_weight_factor", (DL_FUNC) &_ktaucenters_weight_factor, 2},
-    {"_ktaucenters_new_centers", (DL_FUNC) &_ktaucenters_new_centers, 4},
+    {"_ktaucenters_new_centers", (DL_FUNC) &_ktaucenters_new_centers, 5},
     {"_ktaucenters_median_cpp", (DL_FUNC) &_ktaucenters_median_cpp, 1},
     {"_ktaucenters_top_index", (DL_FUNC) &_ktaucenters_top_index, 3},
     {"_ktaucenters_max_tolerance", (DL_FUNC) &_ktaucenters_max_tolerance, 2},

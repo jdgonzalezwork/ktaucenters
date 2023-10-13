@@ -16,6 +16,7 @@ using namespace Rcpp;
 //' estimator for regression. Journal of Computational and GraphicalStatistics,
 //' 17(3), 659-682.
 //'
+//'@export
 // [[Rcpp::export]]
 NumericVector rho_opt(NumericVector x, const double c) {
   NumericVector out(no_init(x.size()));

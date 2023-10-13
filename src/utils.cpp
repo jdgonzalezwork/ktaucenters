@@ -108,7 +108,10 @@ IntegerVector top_index(NumericVector v, int n, bool decreasing) {
 // [[Rcpp::export]]
 double max_tolerance(NumericMatrix x, NumericMatrix y) {
 
-  const std::size_t n = x.rows();
+  if ((x.nrow() != y.nrow()) || (x.ncol() != y.ncol())) {
+    stop("Both matrices must have same dimension");
+  }
+  const std::size_t n = x.nrow();
   NumericVector tolerances(no_init(n));
 
   for (std::size_t i = 0; i < n; ++i) {

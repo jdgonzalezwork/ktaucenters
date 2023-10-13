@@ -16,11 +16,12 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 List flag_outliers(const double cutoff, const double b, List ktau) {
   NumericVector distances = ktau["di"];
+  NumericVector squared_distances = pow(distances, 2);
   const std::size_t p = ktau["p"];
   double thr = R::qchisq(cutoff, p, true, false);
   double c = normal_consistency_constants(p);
   double robust_scale = mscale(distances, c, b);
   IntegerVector indices = seq_along(distances);
-  ktau["outliers"] = indices[distances > thr * pow(robust_scale, 2)];
+  ktau["outliers"] = indices[squared_distances > thr * pow(robust_scale, 2)];
   return ktau;
 }

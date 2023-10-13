@@ -12,6 +12,6 @@ double tau_scale(NumericVector, const double, const double);
 NumericVector wni(NumericVector, const double, const double, const double);
 NumericVector weight_factor(NumericVector, IntegerVector);
 NumericMatrix new_centers(NumericMatrix, NumericVector, IntegerVector,
-                          NumericVector);
+                          const std::size_t, NumericVector);
 
 #endif

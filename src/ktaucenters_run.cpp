@@ -45,31 +45,37 @@ List ktaucenters_run(NumericMatrix x, NumericMatrix centers,
   const double c2 = const_c2(p);
   // Target breakdown point
   const double b1 = 0.5;
-  const double b2 = 1.0;
 
-  int iter = 0;
+  std::size_t iter = 0;
   double tol = tolerance + 1.0;
   NumericVector weights(n);
   NumericVector distance_min(n);
+  NumericVector Wni(no_init(n));
   IntegerVector clusters(n);
-  double tau;
+  double tau, s;
+  List cluster_loc;
+  NumericMatrix old_centers(no_init(n_clusters, p));
+
   while (iter < max_iter && tol > tolerance) {
     // Step 1: (re)compute labels
-    List cluster_loc = cluster_location(x, centers);
+    cluster_loc = cluster_location(x, centers);
     distance_min = cluster_loc["distance"];
     clusters = cluster_loc["clusters"];
 
-    double s = mscale(distance_min, c1, b1);
+    s = mscale(distance_min, c1, b1);
     tau = tau_scale(distance_min, c2, s);
-
     // Step 2: (re)compute centers
-    NumericMatrix old_centers = centers;
-    NumericVector Wni = wni(distance_min, c1, c2, s);
+    old_centers = centers;
+    Wni = wni(distance_min, c1, c2, s);
     weights = weight_factor(Wni, clusters);
-    centers = new_centers(x, weights, clusters, distance_min);
+    centers = new_centers(x, weights, clusters, n_clusters, distance_min);
 
     tol = max_tolerance(old_centers, centers);
     iter += 1;
+  }
+
+  if (iter >= max_iter) {
+    warning("Algorithm did not converge after %i iterations", max_iter);
   }
 
   return (List::create(_["tau"] = tau, _["iter"] = iter, _["di"] = distance_min,

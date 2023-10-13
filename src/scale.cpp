@@ -237,8 +237,10 @@ NumericVector weight_factor(NumericVector wni, IntegerVector clusters) {
 //' @param x numeric matrix of size n x p with all observations.
 //' @param weights numeric vector of size n with the weight factor for each
 //' observation.
-//' @param clusters integer vector of size n with the cluster location for each
-//' observation.
+//' @param cluster_location integer vector of size n with the cluster location
+//' for each observation.
+//' @param n_clusters integer vector of size n with the
+//' cluster location for each ' observation.
 //' @param distances numeric vector of size n with the distances from each
 //' observation to its nearest cluster center.
 //'
@@ -247,11 +249,11 @@ NumericVector weight_factor(NumericVector wni, IntegerVector clusters) {
 //'
 // [[Rcpp::export]]
 NumericMatrix new_centers(NumericMatrix x, NumericVector weights,
-                          IntegerVector clusters, NumericVector distances) {
+                          IntegerVector cluster_location,
+                          const std::size_t n_clusters,
+                          NumericVector distances) {
 
-  const std::size_t n_clusters = unique(clusters).size();
   const std::size_t p = x.cols();
-  const std::size_t n = x.rows();
 
   NumericMatrix out(n_clusters, p);
 
@@ -259,16 +261,17 @@ NumericMatrix new_centers(NumericMatrix x, NumericVector weights,
     NumericVector weighted_column = x.column(column) * weights;
     NumericVector sums(n_clusters, 0.0);
 
-    for (std::size_t idx = 0; idx != clusters.size(); ++idx) {
-      sums[clusters[idx] - 1] += weighted_column[idx];
+    for (std::size_t idx = 0; idx != cluster_location.size(); ++idx) {
+      sums[cluster_location[idx] - 1] += weighted_column[idx];
     }
 
-    for (auto &cluster_it : clusters) {
+    for (auto &cluster_it : cluster_location) {
       out(cluster_it - 1, column) = sums[cluster_it - 1];
     }
   }
 
-  LogicalVector empty_clusters = cluster_counter(clusters, n_clusters) == 0;
+  LogicalVector empty_clusters =
+      cluster_counter(cluster_location, n_clusters) == 0;
 
   if (any(empty_clusters).is_true()) {
     std::vector<int> empty_pos;

@@ -19,16 +19,27 @@ List cluster_location(NumericMatrix x, NumericMatrix centers) {
 
   const std::size_t k = centers.rows();
   const std::size_t n = x.rows();
+  const std::size_t p = x.cols();
   IntegerVector clusters(no_init(n));
   NumericVector distance(no_init(n));
-  NumericVector dist(k);
+  double best, dd, tmp;
+  std::size_t inew = 0;
 
   for (std::size_t n_iter = 0; n_iter < n; ++n_iter) {
+    best = R_PosInf;
     for (std::size_t k_iter = 0; k_iter < k; ++k_iter) {
-      dist[k_iter] = sqrt(sum(pow(x.row(n_iter) - centers.row(k_iter), 2.0)));
+      dd = 0.0;
+      for (std::size_t p_iter = 0; p_iter < p; ++p_iter) {
+        tmp = x[n_iter + n * p_iter] - centers[k_iter + k * p_iter];
+        dd += tmp * tmp;
+      }
+      if (dd < best) {
+        best = dd;
+        inew = k_iter + 1; // Base 1 cluster location.
+      }
     }
-    distance(n_iter) = min(dist);
-    clusters(n_iter) = which_min(dist) + 1; // Base 1 cluster location.
+    distance[n_iter] = std::sqrt(best);
+    clusters[n_iter] = inew;
   }
   return List::create(_["clusters"] = clusters, _["distance"] = distance);
 }

@@ -4,7 +4,7 @@
 \alias{new_centers}
 \title{Computes new cluster centers}
 \usage{
-new_centers(x, weights, clusters, distances)
+new_centers(x, weights, cluster_location, n_clusters, distances)
 }
 \arguments{
 \item{x}{numeric matrix of size n x p with all observations.}
@@ -12,8 +12,11 @@ new_centers(x, weights, clusters, distances)
 \item{weights}{numeric vector of size n with the weight factor for each
 observation.}
 
-\item{clusters}{integer vector of size n with the cluster location for each
-observation.}
+\item{cluster_location}{integer vector of size n with the cluster location
+for each observation.}
+
+\item{n_clusters}{integer vector of size n with the
+cluster location for each ' observation.}
 
 \item{distances}{numeric vector of size n with the distances from each
 observation to its nearest cluster center.}

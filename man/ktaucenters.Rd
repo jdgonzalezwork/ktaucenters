@@ -33,7 +33,20 @@ ktaucenters(
 \item{cutoff}{quantile of chi-square distribution to be used as a threshold for outliers detection, defaults to 0.999}
 }
 \value{
-
+A list including the estimated k centers and labels for the observations
+\itemize{
+ \item{\code{centers}}{:   matrix of size K x p, with the estimated K centers.}
+ \item{\code{cluster}}{: array of size n x 1  integers labels between 1 and K.}
+ \item{\code{tauPath}}{: sequence of tau scale values at each iterations.}
+ \item{\code{Wni}}{: numeric array of size n x 1 indicating the weights
+associated to each observation.}
+ \item{\code{emptyClusterFlag}}{: a boolean value. True means that in some
+iteration there were clusters totally empty}
+ \item{\code{niter}}{: number of iterations until convergence is achieved
+or maximun number of iteration is reached}
+ \item{\code{di}}{: distance of each observation to its assigned cluster-center}
+ \item{\code{outliers}}{: indices observation that can be considered as outliers}
+}
 }
 \description{
 Robust Clustering algorithm.

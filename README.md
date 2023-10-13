@@ -152,10 +152,7 @@ If we want to know the values of outliers, type
 `X[improved_output$outliers, ]`.
 
 By using these commands, it is easy to estimate the original clusters by
-means of `improvedktaucenters` routine.
-
-
-For more information about this package see  the vignette [ktaucenters_vignette.pdf](https://github.com/jdgonzalezwork/ktaucenters/blob/master/ktaucenters_vignette.pdf). 
+means of `improvedktaucenters` routine. 
 
 The preprint [arxiv:1906.08198](https://arxiv.org/abs/1906.08198)) contains comparision with other robust clustering procedures as well as technical details and applications.   
 

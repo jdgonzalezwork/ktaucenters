@@ -1,5 +1,130 @@
 #' ktaucenters
 #'
+#' Robust Clustering algorithm based on centers, a robust and efficient version of KMeans.
+#' @param X numeric matrix  of size n x p.
+#' @param K the number of cluster.
+#' @param centers a matrix of size K x p containing the K initial centers,
+#'  one at each matrix-row. If centers is NULL a random set of (distinct) rows in  \code{X}
+#'  are chosen as the initial centres.
+#' @param tolmin a tolerance parameter used for the algorithm stopping rule
+#' @param NiterMax a maximun number of iterations used for the algorithm stopping rule
+#' @param nstart the number of trials that the base algorithm ktaucenters_aux is run.
+#' If it is greater than 1 and center is not set as NULL, a random set of (distinct) rows
+#' in \code{X} will be chosen as the initial centres.
+#' @param startWithKmeans  TRUE if kmean centers values is included as starting point.
+#' @param startWithROBINPD TRUE if ROBINDEN estimator is included as starting point
+#' @param cutoff optional argument for outliers detection - quantiles of chi-square to be used as a threshold for outliers detection, defaults to 0.999
+#' @return A list including the estimated K centers and labels for the observations
+##' \itemize{
+##'  \item{\code{centers}}{:   matrix of size K x p, with the estimated K centers.}
+##'  \item{\code{cluster}}{: array of size n x 1  integers labels between 1 and K.}
+##'  \item{\code{tauPath}}{: sequence of tau scale values at each iterations.}
+##'  \item{\code{Wni}}{: numeric array of size n x 1 indicating the weights associated to each observation.}
+##'  \item{\code{emptyClusterFlag}}{: a boolean value. True means that in some iteration there were clusters totally empty}
+##'  \item{\code{niter}}{: number of iterations untill convergence is achived or maximun number of iteration is reached}
+##'  \item{\code{di}}{: distance of each observation to its assigned cluster-center}
+##'  \item{\code{outliers}}{: indices observation that can be considered as outliers}
+##' }
+#'
+#' @references Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019).
+#' Robust Clustering Using Tau-Scales. arXiv preprint arXiv:1906.08198.
+#'
+#' @importFrom stats kmeans dist qchisq
+#' @export
+ktaucenters <- function(X,
+                       K,
+                       centers = NULL,
+                       tolmin = 1e-06,
+                       NiterMax = 100,
+                       nstart = 1,
+                       startWithKmeans = TRUE,
+                       startWithROBINPD = TRUE,
+                       cutoff = 0.999) {
+
+  warning("In a next version, this function is going to be changed. Use ktaucentersfast instead.")
+  if (!is.matrix(X)) {
+    X <- as.matrix(X)
+    
+  }
+  init_centers <- centers
+  taumin <- 1e+20
+  n <- nrow(X)
+  p <- ncol(X)
+  
+  centers0 <- matrix(0, nrow = K, ncol = p)
+  start = 1 * (!startWithKmeans)
+  # the start value is one or zero.
+  nstartEnd <- nstart + 1 * (startWithROBINPD)
+  
+  for (trial in start:nstartEnd) {
+    # if startWithKmeans its true, start=0, then trial take the zero value.
+    if (trial == 0) {
+      sal0 <- kmeans(X, centers = K, nstart = 20)
+      sal0$labels <- sal0$cluster
+      for (jota in 1:K) {
+        # when there is a single observation, it is not possible to use apply function
+        if (sum(sal0$labels == jota) == 1) {
+          centers0[jota,] <- X[sal0$labels == jota,]
+        }
+        
+        if (sum(sal0$labels == jota) > 1) {
+          # as.matrix below is necessary because if p=1 function "apply" will not work.
+          centers0[jota,] <-
+            apply(as.matrix(X[sal0$labels == jota,]), 2, mean)
+        }
+      }
+    }
+    
+    if (trial >= 1) {
+      centers0 <- X[sample(1:dim(X)[1], K),]
+    }
+    
+    if ((trial == 1) & (!is.null(init_centers))) {
+      centers0 <- init_centers
+      
+    }
+    if (trial == nstart + 1) {
+      retROB <- robinden(as.matrix(dist(X)),
+                         n_clusters = K,
+                         10)
+      
+      centers0 <- X[retROB$centers + 1,]
+    }
+    
+    centers <- centers0
+    
+    ret_ktau <- ktaucenters_run(X, centers, tolmin, NiterMax)
+
+    tau <- ret_ktau$tau;
+    niter = ret_ktau$iter
+    
+    if (tau < taumin) {
+      # si la escala es menor que las otras actualizo
+      taumin <- tau
+      
+      best_tau <- tau
+      best_ret_ktau <- ret_ktau
+    }
+  }
+  
+  newClusters <- best_ret_ktau$cluster
+  squaredi <- (best_ret_ktau$di) ^ 2
+  robustScale <- mscale(u = sqrt(squaredi),
+                       c = normal_consistency_constants(p),
+                       b = 0.5)
+  
+  outliers <- c()
+  value <- qchisq(cutoff, df = p)
+  for (j in 1:K) {
+    indices <- which(newClusters == j)
+    booleansubindices <- (squaredi[indices] / (robustScale ^ 2)) > value
+    outliersk <- indices[booleansubindices]
+    outliers <- c(outliersk, outliers)
+  }
+  best_ret_ktau$outliers <- outliers
+  best_ret_ktau
+}
+
 #' Robust Clustering algorithm.
 #' @param x numeric matrix of size n x p, or an object that can be coerced to a matrix (such as a numeric vector or a data frame with all numeric columns).
 #' @param centers either the number of clusters, say *k*, or a matrix of initial (distinct) cluster centers. If a number, a random set of (distinct) rows in x is chosen as the initial centers.
@@ -28,7 +153,7 @@
 #'
 #' @importFrom stats kmeans
 #' @export
-ktaucenters <- function(x,
+ktaucentersfast <- function(x,
                         centers,
                         nstart = 1L,
                         use_kmeans = TRUE,

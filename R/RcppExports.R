@@ -125,8 +125,8 @@ flag_outliers <- function(cutoff, b, ktau) {
 #' 17(3), 659-682.
 #'
 #'@export
-rho_opt <- function(x, c) {
-    .Call('_ktaucenters_rho_opt', PACKAGE = 'ktaucenters', x, c)
+rhoOpt <- function(x, c) {
+    .Call('_ktaucenters_rhoOpt', PACKAGE = 'ktaucenters', x, c)
 }
 
 #' Derivative of the quasi optimal \eqn{\rho} function
@@ -138,8 +138,9 @@ rho_opt <- function(x, c) {
 #' Numeric vector with the derivative of the quasi optimal \eqn{\rho}
 #' computation for each element of x.
 #'
-psi_opt <- function(x, c) {
-    .Call('_ktaucenters_psi_opt', PACKAGE = 'ktaucenters', x, c)
+#'@export
+psiOpt <- function(x, c) {
+    .Call('_ktaucenters_psiOpt', PACKAGE = 'ktaucenters', x, c)
 }
 
 #' Second derivative of the quasi \eqn{\rho} function
@@ -151,8 +152,9 @@ psi_opt <- function(x, c) {
 #' Numeric vector with the second derivative of the quasi optimal \eqn{\rho}
 #' computation for each element of x.
 #'
-derpsi_opt <- function(x, c) {
-    .Call('_ktaucenters_derpsi_opt', PACKAGE = 'ktaucenters', x, c)
+#'@export
+derpsiOpt <- function(x, c) {
+    .Call('_ktaucenters_derpsiOpt', PACKAGE = 'ktaucenters', x, c)
 }
 
 #' Estimates the local points density.
@@ -219,7 +221,7 @@ robinden <- function(D, n_clusters, mp) {
 #'
 #' M scale tuning constants so it is consistent with the standard
 #' normal distribution for the quasi optimal \eqn{\rho} function used in
-#' \code{\link{rho_opt}}. These constants were computed for 1 \eqn{\leq} p
+#' \code{\link{rhoOpt}}. These constants were computed for 1 \eqn{\leq} p
 #' \eqn{\leq} 400.
 #'
 #' @param p dimension where observation lives.

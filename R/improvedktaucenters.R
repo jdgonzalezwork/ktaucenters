@@ -90,24 +90,28 @@
 #' Robust Clustering Using Tau-Scales. arXiv preprint arXiv:1906.08198. 
 #' @export
 
-improvedktaucenters=function(X,K,cutoff=0.999,nstart =5,INITcenters=NULL){
+improvedktaucenters <- function(X,
+                                K,
+                                cutoff = 0.999,
+                                nstart = 5,
+                                INITcenters = NULL) {
 
-  n=dim(X)[1]
-  p=dim(X)[2]
+  n <- dim(X)[1]
+  p <- dim(X)[2]
   sigmas <- vector(mode="list", length=K);
   centers=INITcenters
   #### FIRST STEP: determine the best centers  #####
 
   # if centers are not given, we calculate with ktaucenters routine
   if (is.null(centers)){
-    ret_ktau <- ktaucenters(X, K, nstart = nstart)
+    ret_ktau <- ktaucentersfast(X, K, nstart = nstart)
     centers <- ret_ktau$centers
-    newClusters<-ret_ktau$cluster
+    newClusters<-ret_ktau$clusters
   }
   
   #### if centers are given, we  just 
   #### calculate the clusters from these centers. 
-  sphericalDistanceMatrix<- matrix(0, ncol = K, nrow = n)
+  sphericalDistanceMatrix <- matrix(0, ncol = K, nrow = n)
     if (!is.null(centers)){
     for (j in 1:K){
     sphericalDistanceMatrix[,j] <- mahalanobis(x=X,

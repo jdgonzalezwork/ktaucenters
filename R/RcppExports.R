@@ -236,6 +236,7 @@ robinden <- function(D, n_clusters, mp) {
 #' estimator for regression. 'Journal of Computational and Graphical
 #' Statistics, 17(3), 659-682.
 #'
+#'@export
 normal_consistency_constants <- function(p) {
     .Call('_ktaucenters_normal_consistency_constants', PACKAGE = 'ktaucenters', p)
 }
@@ -271,8 +272,9 @@ const_c2 <- function(p) {
 #' @return
 #' M scale value
 #'
-mscale <- function(u, c, b) {
-    .Call('_ktaucenters_mscale', PACKAGE = 'ktaucenters', u, c, b)
+#'@export
+Mscale <- function(u, c, b) {
+    .Call('_ktaucenters_Mscale', PACKAGE = 'ktaucenters', u, c, b)
 }
 
 #' \eqn{\tau} scale

@@ -41,7 +41,7 @@ ktaucenters <- function(X,
                        startWithROBINPD = TRUE,
                        cutoff = 0.999) {
 
-  warning("In a next version, this function is going to be changed. Use ktaucentersfast instead.")
+  warning("In a next version (second semester 2024), this function will be changed.")
   if (!is.matrix(X)) {
     X <- as.matrix(X)
     
@@ -109,7 +109,7 @@ ktaucenters <- function(X,
   
   newClusters <- best_ret_ktau$cluster
   squaredi <- (best_ret_ktau$di) ^ 2
-  robustScale <- mscale(u = sqrt(squaredi),
+  robustScale <- Mscale(u = sqrt(squaredi),
                        c = normal_consistency_constants(p),
                        b = 0.5)
   

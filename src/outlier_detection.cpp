@@ -20,7 +20,7 @@ List flag_outliers(const double cutoff, const double b, List ktau) {
   const std::size_t p = ktau["p"];
   double thr = R::qchisq(cutoff, p, true, false);
   double c = normal_consistency_constants(p);
-  double robust_scale = mscale(distances, c, b);
+  double robust_scale = Mscale(distances, c, b);
   IntegerVector indices = seq_along(distances);
   ktau["outliers"] = indices[squared_distances > thr * pow(robust_scale, 2)];
   return ktau;

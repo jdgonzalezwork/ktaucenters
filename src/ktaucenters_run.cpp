@@ -62,7 +62,7 @@ List ktaucenters_run(NumericMatrix x, NumericMatrix centers,
     distance_min = cluster_loc["distance"];
     clusters = cluster_loc["clusters"];
 
-    s = mscale(distance_min, c1, b1);
+    s = Mscale(distance_min, c1, b1);
     tau = tau_scale(distance_min, c2, s);
     // Step 2: (re)compute centers
     old_centers = centers;

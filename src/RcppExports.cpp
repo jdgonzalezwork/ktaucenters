@@ -180,16 +180,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// mscale
-double mscale(NumericVector u, const double c, const double b);
-RcppExport SEXP _ktaucenters_mscale(SEXP uSEXP, SEXP cSEXP, SEXP bSEXP) {
+// Mscale
+double Mscale(NumericVector u, const double c, const double b);
+RcppExport SEXP _ktaucenters_Mscale(SEXP uSEXP, SEXP cSEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type u(uSEXP);
     Rcpp::traits::input_parameter< const double >::type c(cSEXP);
     Rcpp::traits::input_parameter< const double >::type b(bSEXP);
-    rcpp_result_gen = Rcpp::wrap(mscale(u, c, b));
+    rcpp_result_gen = Rcpp::wrap(Mscale(u, c, b));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -299,7 +299,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_ktaucenters_robinden", (DL_FUNC) &_ktaucenters_robinden, 3},
     {"_ktaucenters_normal_consistency_constants", (DL_FUNC) &_ktaucenters_normal_consistency_constants, 1},
     {"_ktaucenters_const_c2", (DL_FUNC) &_ktaucenters_const_c2, 1},
-    {"_ktaucenters_mscale", (DL_FUNC) &_ktaucenters_mscale, 3},
+    {"_ktaucenters_Mscale", (DL_FUNC) &_ktaucenters_Mscale, 3},
     {"_ktaucenters_tau_scale", (DL_FUNC) &_ktaucenters_tau_scale, 3},
     {"_ktaucenters_wni", (DL_FUNC) &_ktaucenters_wni, 4},
     {"_ktaucenters_weight_factor", (DL_FUNC) &_ktaucenters_weight_factor, 2},

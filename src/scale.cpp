@@ -24,6 +24,7 @@ using namespace Rcpp;
 //' estimator for regression. 'Journal of Computational and Graphical
 //' Statistics, 17(3), 659-682.
 //'
+//'@export
 // [[Rcpp::export]]
 double normal_consistency_constants(const std::size_t p) {
   // TODO: Replace hard coded values with function
@@ -119,8 +120,9 @@ double const_c2(const std::size_t p) { return 2.9987 * pow(p, -0.4647); }
 //' @return
 //' M scale value
 //'
+//'@export
 // [[Rcpp::export]]
-double mscale(NumericVector u, const double c, const double b) {
+double Mscale(NumericVector u, const double c, const double b) {
 
   const double max_error_diff = 1e-10;
 

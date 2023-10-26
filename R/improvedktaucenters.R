@@ -98,102 +98,67 @@ improvedktaucenters <- function(X,
 
   n <- dim(X)[1]
   p <- dim(X)[2]
-  sigmas <- vector(mode="list", length=K);
-  centers=INITcenters
-  #### FIRST STEP: determine the best centers  #####
-
-  # if centers are not given, we calculate with ktaucenters routine
-  if (is.null(centers)){
+  
+  # FIRST STEP: determine the best centers
+  if (is.null(INITcenters)){
     ret_ktau <- ktaucentersfast(X, K, nstart = nstart)
     centers <- ret_ktau$centers
-    newClusters<-ret_ktau$clusters
-  }
-  
-  #### if centers are given, we  just 
-  #### calculate the clusters from these centers. 
-  sphericalDistanceMatrix <- matrix(0, ncol = K, nrow = n)
-    if (!is.null(centers)){
+    newClusters <-ret_ktau$clusters
+  } else {
+    sphericalDistanceMatrix <- matrix(0, ncol = K, nrow = n)
+    centers <- INITcenters
     for (j in 1:K){
-    sphericalDistanceMatrix[,j] <- mahalanobis(x=X,
-                                           center=centers[j, ]
-                                           ,cov=diag(p))
+    sphericalDistanceMatrix[, j] <- mahalanobis(x = X,
+                                                center = centers[j, ],
+                                                cov = diag(p))
       
     }  
     newClusters <- apply(sphericalDistanceMatrix, 1,
-                             function(x) which( x == min(x))[1])
+                        function(x) which(x == min(x))[1])
   }
   
-  
+  sigmas <- replicate(K, diag(p), simplify = FALSE)
   newcentersaux <- 0*centers
+
+  #=========== SECOND STEP ========
+  mahalanobisMatrix <- matrix(0, ncol = K, nrow = n)
   for (j in 1:K){
-    sigmas[[j]] <- diag(p)
+    Xcluster <- X[newClusters==j, ]
+    
+    # dim works properly when there are two or more observations
+    if (sum(newClusters==j) < 2){
+      nk <- sum(newClusters==j)
+    } else {
+      nk <- dim(Xcluster)[1]
+    }
+    
+    # if there is enough observations, we compute 
+    # robust covarianze matrix 
+    if(nk > (3*p)){
+      sal1 <- GSE(Xcluster, tol = 1e-4, maxiter = 150)
+      newcentersaux[j, ] <- getLocation(sal1)
+      sigmas[[j]] <- getScatter(sal1)
+    } else {
+      newcentersaux[j, ] <- centers[j, ]
+    }
+    mahalanobisMatrix[, j] <- mahalanobis(x = X,
+                                          center = newcentersaux[j, ],
+                                          cov = ginv(sigmas[[j]]),
+                                          inverted = TRUE)
+    
   }
 
-#=========== and SECOND STEP ========
-iter=0
-newcenters <- centers;
-while(iter<1){
-    for (j in 1:K){
-      Xcluster <- X[newClusters==j,];
-      nk <- dim(Xcluster)[1];
-      
-      # dim works properly when there are two or more observations, for that reason: 
-      if (sum(newClusters==j)<2){
-        nk=sum(newClusters==j)
-        }
-      
-      # if there is enough observations, we proceed to compute 
-      # robust covarianze matrix 
-      if(nk>(3*p)){
-        #  Xcentered <- sweep(Xcluster, 2, centers[j,], FUN="-")
-          sal1 <- GSE(Xcluster, tol=1e-4, maxiter=150)
-          newcentersaux[j,] <- getLocation(sal1)
-          sigmas[[j]] <- getScatter(sal1)
-      }
-      # if there is not enough observations, we don't compute 
-      # robust covarianze matrix 
-      if(nk<=(3*p)){
-        newcentersaux[j,]= newcenters[j, ]
-      }
-      
-    }
+  newClusters_Mah <- apply(mahalanobisMatrix, 1,
+                          function(x) which(x == min(x))[1])
+  value <- qchisq(cutoff, df = p)
 
-    mahalanobisMatrix <- matrix(0, ncol = K, nrow = n)
-    for (j in 1:K){
-      mahalanobisMatrix[,j] <- mahalanobis(x=X,
-                                        center=newcentersaux[j, ]
-                                        ,cov=ginv(sigmas[[j]]),
-                                        inverted = TRUE)
-
-    }
-    newClusters_Mah <- apply(mahalanobisMatrix, 1,
-                          function(x) which( x == min(x))[1])
-    value <- qchisq(cutoff, df = p)
-
-    #IMPROVED oultiers determination. 
-    outliers=c()
-    for (j in 1:K){
-      indices <- which(newClusters_Mah == j)
-      booleansubindices <- mahalanobisMatrix[indices, j] > value
-      outliersk <- indices[booleansubindices]
-      outliers <- c(outliersk, outliers)
-    }
-
-  # In the future: implement this lines should be worked better than current for unbalanced-cluster cases.
-  # qsMatrix=matrix(0,ncol=K,nrow=n)
-  #  logdet=rep(0,K);
-
-  #  for (j in 1:K){
-  #    logalpha=sum(newClusters_Mah==j)/(n-length(outliers))
-  #    logdet[j]=log(det(sigmas[[j]]))
-  #    qsMatrix[,j]= logalpha[j] - .5*logdet[j] -.5*mahalanobisMatrix[,j]
-  #  }
-  #  newClusters_qs=apply(qsMatrix,1,function(x) which(x==min(x))[1])
-
-    newClusters <- newClusters_Mah;
-    newcenters <- newcentersaux;
-    iter <- iter + 1
+  #IMPROVED oultiers determination. 
+  outliers <- c()
+  for (j in 1:K){
+    indices <- which(newClusters_Mah == j)
+    outliersk <- indices[mahalanobisMatrix[indices, j] > value]
+    outliers <- c(outliersk, outliers)
   }
 
-  list(cluster=newClusters, centers=newcenters, outliers=outliers, sigmas=sigmas);
+  list(cluster = newClusters_Mah, centers = newcentersaux, outliers = outliers, sigmas = sigmas)
 }

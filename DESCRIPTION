@@ -1,7 +1,7 @@
 Package: ktaucenters
 Type: Package
 Title: Robust Clustering Procedures
-Version: 0.2.0
+Version: 1.0.0
 Author: Juan Domingo Gonzalez [cre, aut],
   Victor J. Yohai [aut],
   Ruben H. Zamar [aut],

@@ -2,17 +2,12 @@ Package: ktaucenters
 Type: Package
 Title: Robust Clustering Procedures
 Version: 1.0.0
-Author: Juan Domingo Gonzalez [cre, aut],
-  Victor J. Yohai [aut],
-  Ruben H. Zamar [aut],
-  Douglas Alberto Carmona Guanipa [aut],
 Authors@R: c(
   person("Juan Domingo", "Gonzalez", email = "juanrst@hotmail.com", role = c("cre","aut")),
   person("Victor J.", "Yohai", email = "victoryohai@gmail.com", role = "aut"),
   person("Ruben H.", "Zamar", email = "ruben@stat.ubc.ca", role = "aut"),
   person("Douglas Alberto", "Carmona Guanipa", email = "douglas.albertocg@gmail.com", role = "aut")
-  ) 
-Maintainer: Juan Domingo Gonzalez <juanrst@hotmail.com>, Douglas Alberto Carmona Guanipa <douglas.albertocg@gmail.com>
+  )
 Description: A clustering algorithm similar to K-Means is implemented, it has two main advantages, 
     namely (a) The estimator is resistant to outliers, that means that results of estimator are still correct when
     there are atypical values in the sample and (b) The estimator is efficient, roughly speaking, 
@@ -21,6 +16,7 @@ Description: A clustering algorithm similar to K-Means is implemented, it has tw
     (see Gonzalez, Yohai and Zamar (2019) <arxiv:1906.08198>).
 License: GPL (>= 2)
 Encoding: UTF-8
+NeedsCompilation: yes
 Depends: R (>= 2.10), MASS, methods, dplyr, dbscan, stats, GSE
 Language: en-US
 Imports: Rcpp (>= 1.0.9)

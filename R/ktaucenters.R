@@ -4,30 +4,61 @@
 #' @param X numeric matrix  of size n x p.
 #' @param K the number of cluster.
 #' @param centers a matrix of size K x p containing the K initial centers,
-#'  one at each matrix-row. If centers is NULL a random set of (distinct) rows in  \code{X}
+#'  one at each matrix-row. If centers is NULL a random set of (distinct) rows in \code{X}
 #'  are chosen as the initial centres.
 #' @param tolmin a tolerance parameter used for the algorithm stopping rule
-#' @param NiterMax a maximun number of iterations used for the algorithm stopping rule
-#' @param nstart the number of trials that the base algorithm ktaucenters_aux is run.
+#' @param NiterMax a maximum number of iterations used for the algorithm stopping rule
+#' @param nstart the number of trials that the base algorithm is run.
 #' If it is greater than 1 and center is not set as NULL, a random set of (distinct) rows
 #' in \code{X} will be chosen as the initial centres.
 #' @param startWithKmeans  TRUE if kmean centers values is included as starting point.
-#' @param startWithROBINPD TRUE if ROBINDEN estimator is included as starting point
+#' @param startWithROBINPD TRUE if ROBINDEN estimator is included as starting point.
 #' @param cutoff optional argument for outliers detection - quantiles of chi-square to be used as a threshold for outliers detection, defaults to 0.999
 #' @return A list including the estimated K centers and labels for the observations
 ##' \itemize{
-##'  \item{\code{centers}}{:   matrix of size K x p, with the estimated K centers.}
+##'  \item{\code{centers}}{: matrix of size K x p, with the estimated K centers.}
 ##'  \item{\code{cluster}}{: array of size n x 1  integers labels between 1 and K.}
 ##'  \item{\code{tauPath}}{: sequence of tau scale values at each iterations.}
 ##'  \item{\code{Wni}}{: numeric array of size n x 1 indicating the weights associated to each observation.}
 ##'  \item{\code{emptyClusterFlag}}{: a boolean value. True means that in some iteration there were clusters totally empty}
-##'  \item{\code{niter}}{: number of iterations untill convergence is achived or maximun number of iteration is reached}
+##'  \item{\code{niter}}{: number of iterations until convergence is achieved or maximum number of iteration is reached}
 ##'  \item{\code{di}}{: distance of each observation to its assigned cluster-center}
 ##'  \item{\code{outliers}}{: indices observation that can be considered as outliers}
 ##' }
 #'
-#' @references Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019).
-#' Robust Clustering Using Tau-Scales. arXiv preprint arXiv:1906.08198.
+#' @examples
+#' # Generate synthetic data (three clusters well separated)
+#' Z <- rnorm(600)
+#' mues <- rep(c(-3, 0, 3), 200)
+#' X <- matrix(Z + mues, ncol = 2)
+#'
+#' # Generate 60 synthetic outliers (contamination level 20%)
+#' X[sample(1:300,60), ] <- matrix(runif( 40, 3 * min(X), 3 * max(X) ),
+#'                                 ncol = 2, nrow = 60)
+#'
+#'sal <- ktaucenters(
+#'      X, K = 3, centers = X[sample(1:300, 3), ],
+#'      tolmin = 1e-3, NiterMax = 100)
+#'
+#' oldpar <- par(mfrow = c(1,2))
+#' 
+#' plot(X,type = "n", main = "ktaucenters (Robust) \n outliers: solid black dots")
+#' points(X[sal$cluster==1,], col = 2)
+#' points(X[sal$cluster==2,], col = 3)
+#' points(X[sal$cluster==3,], col = 4)
+#' points(X[sal$outliers, 1], X[sal$outliers, 2], pch = 19)
+#'
+#' # Classical (non Robust) algortihm
+#' sal <- kmeans(X, centers = 3, nstart = 100)
+#'
+#' plot(X, type = "n", main = "kmeans (Classical)")
+#' points(X[sal$cluster==1,], col = 2)
+#' points(X[sal$cluster==2,], col = 3)
+#' points(X[sal$cluster==3,], col = 4)
+#'
+#' par(oldpar)
+#' @references Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019). 
+#' Robust Clustering Using Tau-Scales. arXiv preprint arXiv:1906.08198. 
 #'
 #' @importFrom stats kmeans dist qchisq
 #' @export
@@ -99,7 +130,6 @@ ktaucenters <- function(X,
     niter = ret_ktau$iter
     
     if (tau < taumin) {
-      # si la escala es menor que las otras actualizo
       taumin <- tau
       
       best_tau <- tau
@@ -190,7 +220,7 @@ ktaucentersfast <- function(x,
     }
   }
   
-  # Set up center initialization
+  # Setup center initialization
   if (is.matrix(centers)) {
     init_centers <- list(centers)
   } else {

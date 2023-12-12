@@ -2,92 +2,82 @@
 #'
 #' Robust Clustering algorithm for non-spherical data. This function estimate clusters taking into account that clusters may have
 #' different size, volume or orientation.
-#' @param X numeric matrix  of size n x p.
-#' @param K the number of cluster.
-#' @param cutoff optional argument for getOutliers - quantiles of chi-square to be used as a threshold for outliers detection, defaults to 0.999
-#' @param nstart optional the number of trials that the base algorithm ktaucenters_aux is run
-#' at the first stage. #' If it is greater than 1 and center is not set as NULL,
-#' a random set of (distinct) rows in x is chosen as the initial centres for each try.
-#' @param INITcenters numeric matrix  of size K x p indicating the initial centers for that clusters and robust covarianze matrices will be 
-#' computed, if it is set as NULL the algorithm will compute @param INITcenters from ktaucenters routine. Set to NULL by default. 
-#' @return A list including the estimated K centers and clusters labels for the observations
+#' @param X numeric matrix of size n x p.
+#' @param K the number of clusters.
+#' @param cutoff optional argument for getOutliers - quantiles of chi-square to be used as a threshold for outliers detection, defaults to 0.999.
+#' @param nstart optional the number of trials that the base ktaucenters is run at the first stage.
+#' If it is greater than 1 and center is not set as NULL, a random set of (distinct) rows in x is chosen as the initial centres for each trial.
+#' @param INITcenters numeric matrix of size K x p indicating the initial centers for that clusters and robust covariance matrices will be
+#' computed, if it is set as NULL the algorithm will compute @param INITcenters from ktaucenters routine. Set to NULL by default.
+#' @return A list including the estimated K centers and clusters labels for the observations.
 
 ## @details text describing parameter inputs in more detail.
 #' \itemize{
-#'  \item{\code{centers}}{:   matrix of size K x p, with the estimated K centers.}
+#'  \item{\code{centers}}{: matrix of size K x p, with the estimated K centers.}
 #'  \item{\code{cluster}}{: array of size n x 1  integers labels between 1 and K.}
 #'  \item{\code{tauPath}}{: sequence of tau scale values at each iterations.}
 #'  \item{\code{Wni}}{: numeric array of size n x 1 indicating the weights associated to each observation.}
 #'  \item{\code{emptyClusterFlag}}{: a boolean value. True means that in some iteration there were clusters totally empty.}
-#'  \item{\code{niter}}{: number of iterations untill convergence is achived or maximun number of iteration is reached.}
+#'  \item{\code{niter}}{: number of iterations until convergence is achieved or maximum number of iteration is reached.}
 #'  \item{\code{sigmas}}{: a list containing the k covariance matrices found by the procedure at its second step.}
 #'  \item{\code{outliers}}{: indices observation that can be considered as outliers.}
 #' }
-#' @importFrom GSE GSE   getOutliers  getLocation  getScatter
+#' @importFrom GSE GSE getOutliers getLocation getScatter
 #' @importFrom MASS ginv
-#' @importFrom stats   mahalanobis  qchisq
+#' @importFrom stats mahalanobis  qchisq
 ## #
 #' @examples
 #'
-#' # Generate Sintetic data (three normal cluster in two dimension)
-#' # clusters have different shapes and orentation.
+#' # Generate synthetic data (three normal cluster in two dimensions)
+#' # Clusters have different shapes and orientation.
 #' # The data is contaminated uniformly (level 20%).
 #'
-#' ################################################
-#' #### Start data generating process ############
-#' ##############################################
+#' # Start data generating process
 #'
-#' # generates base clusters
+#' # Generates base clusters
 #' set.seed(1)
-#' Z1 <- c(rnorm(100,0),rnorm(100,0),rnorm(100,0))
-#' Z2 <- rnorm(300);
-#' X <-  matrix(0, ncol=2,nrow=300);
-#' X[,1]=Z1;X[,2]=Z2
-#' true.cluster= c(rep(1,100),rep(2,100),rep(3,100))
+#' Z1 <- c(rnorm(100, 0), rnorm(100, 0), rnorm(100, 0))
+#' Z2 <- rnorm(300)
+#' X <- matrix(0, ncol = 2, nrow = 300)
+#' X[,1] <- Z1
+#' X[,2] <- Z2
+#' true.cluster <- c(rep(1, 100), rep(2, 100), rep(3, 100))
 #'
-#' # rotate, expand and translate base clusters
-#' theta=pi/3;
-#' aux1=matrix(c(cos(theta),-sin(theta),sin(theta),cos(theta)),nrow=2)
-#' aux2=sqrt(4)*diag(c(1,1/4))
-#' B=aux1%*%aux2%*%t(aux1)
-#' X[true.cluster==3,]=X[true.cluster==3,]%*%aux2%*%aux1 + matrix(c(5,2),byrow = TRUE,nrow=100,ncol=2)
-#' X[true.cluster==2,2]=X[true.cluster==2,2]*5
-#' X[true.cluster==1,2]=X[true.cluster==1,2]*0.1
-#' X[true.cluster==1, ]=X[true.cluster==1,]+ matrix(c(-5,-1),byrow = TRUE,nrow=100,ncol=2)
+#' # Rotate, expand and translate base clusters
+#' theta <- pi/3
+#' aux1 <- matrix(c(cos(theta), -sin(theta), sin(theta), cos(theta)), nrow = 2)
+#' aux2 <- sqrt(4)*diag(c(1, 1/4))
+#' B <- aux1%*%aux2%*%t(aux1)
+#' X[true.cluster==3,] <- X[true.cluster==3, ]%*%aux2%*%aux1 + matrix(c(5,2),byrow = TRUE,nrow=100,ncol=2)
+#' X[true.cluster==2,2] <- X[true.cluster==2, 2]*5
+#' X[true.cluster==1,2] <- X[true.cluster==1, 2]*0.1
+#' X[true.cluster==1, ] <- X[true.cluster==1,] + matrix(c(-5,-1), byrow = TRUE, nrow = 100, ncol = 2)
 
-#' ### Generate 60 sintetic outliers (contamination level 20%)
+#' # Generate 60 synthetic outliers (contamination level 20%)
 #'
-#' outliers=sample(1:300,60)
+#' outliers <- sample(1:300, 60)
 #' X[outliers, ] <- matrix(runif( 40, 2 * min(X), 2 * max(X) ),
 #'                                 ncol = 2, nrow = 60)
-#' ###############################################
-#' #### END data generating process ############
-#' #############################################
 #'
-#' #############################################
-#' ### Applying the algortihm ##################
-#' #############################################
-#' ret=improvedktaucenters(X,K=3,cutoff=0.999)
+#' # Applying the algorithm
+#' ret <- improvedktaucenters(X, K = 3, cutoff = 0.999)
 #'
-#' #############################################
-#' ### plotting results ########################
-#' #############################################
-#' oldpar=par(mfrow=c(2,1))
-#' plot(X,main="actual clusters")
+#' # plotting results
+#' oldpar <- par(mfrow = c(2, 1))
+#' plot(X, main = "actual clusters")
 #' for (j in 1:3){
-#'  points(X[true.cluster==j,],pch=19, col=j+1)
+#'  points(X[true.cluster==j,], pch = 19, col = j+1)
 #' }
-#' points(X[outliers,],pch=19,col=1)
-
-#' plot(X,main="clusters estimation")
+#' points(X[outliers,], pch = 19, col = 1)
+#' plot(X, main = "clusters estimation")
 #' for (j in 1:3){
-#'  points(X[ret$cluster==j,],pch=19, col=j+1)
+#'  points(X[ret$cluster==j,], pch = 19, col = j+1)
 #' }
-#' points(X[ret$outliers,],pch=19)
+#' points(X[ret$outliers,], pch = 19)
 #' 
 #' par(oldpar)
-#' @references Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019). 
-#' Robust Clustering Using Tau-Scales. arXiv preprint arXiv:1906.08198. 
+#' @references Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019).
+#' Robust Clustering Using Tau-Scales. arXiv preprint arXiv:1906.08198.
 #' @export
 
 improvedktaucenters <- function(X,
@@ -99,7 +89,7 @@ improvedktaucenters <- function(X,
   n <- dim(X)[1]
   p <- dim(X)[2]
   
-  # FIRST STEP: determine the best centers
+  # Determine the best centers
   if (is.null(INITcenters)){
     ret_ktau <- ktaucentersfast(X, K, nstart = nstart)
     centers <- ret_ktau$centers
@@ -120,7 +110,6 @@ improvedktaucenters <- function(X,
   sigmas <- replicate(K, diag(p), simplify = FALSE)
   newcentersaux <- 0*centers
 
-  #=========== SECOND STEP ========
   mahalanobisMatrix <- matrix(0, ncol = K, nrow = n)
   for (j in 1:K){
     Xcluster <- X[newClusters==j, ]
@@ -132,8 +121,8 @@ improvedktaucenters <- function(X,
       nk <- dim(Xcluster)[1]
     }
     
-    # if there is enough observations, we compute 
-    # robust covarianze matrix 
+    # if there is enough observations, we compute
+    # robust covariance matrix 
     if(nk > (3*p)){
       sal1 <- GSE(Xcluster, tol = 1e-4, maxiter = 150)
       newcentersaux[j, ] <- getLocation(sal1)
@@ -152,7 +141,7 @@ improvedktaucenters <- function(X,
                           function(x) which(x == min(x))[1])
   value <- qchisq(cutoff, df = p)
 
-  #IMPROVED oultiers determination. 
+  #Improved outliers determination
   outliers <- c()
   for (j in 1:K){
     indices <- which(newClusters_Mah == j)

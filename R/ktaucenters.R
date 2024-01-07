@@ -8,7 +8,7 @@
 #' \code{X}
 #' are chosen as the initial centers.
 #' @param tolmin a tolerance parameter used for the algorithm stopping rule.
-#' @param NiterMax a maximum number of iterations used for the algorithm stopping rule
+#' @param NiterMax a maximum number of iterations used for the algorithm stopping rule.
 #' @param nstart the number of trials that the base algorithm is run.
 #' If it is greater than 1 and centers is not set as NULL, a random set of (distinct)
 #' rows
@@ -19,16 +19,16 @@
 #' included as starting point.
 #' @param cutoff optional argument for outliers detection - quantiles of chi-square
 #' to be used as a threshold
-#' for outliers detection, defaults to 0.999
-#' @return A list including the estimated K centers and labels for the observations
+#' for outliers detection, defaults to 0.999.
+#' @return A list with the following components:
 ##' \itemize{
-##'  \item{\code{centers}}{: matrix of size K x p, with the estimated K centers.}
-##'  \item{\code{cluster}}{: a vector of integer (from 1:K) indicating the cluster to
+##'  \item{\code{centers}}{: Matrix of size K x p with the estimated K centers.}
+##'  \item{\code{cluster}}{: A vector of integer (from 1:K) indicating the cluster to
 ##' which each point is allocated.}
-##'  \item{\code{iter}}{: number of iterations until convergence is achieved or
-##' maximum number of iteration is reached.}
-##'  \item{\code{di}}{: distance of each observation to its assigned cluster-center.}
-##'  \item{\code{outliers}}{: a vector of integer with indices for each observation
+##'  \item{\code{iter}}{: Number of iterations until convergence is achieved or
+##' maximum number of iterations reached.}
+##'  \item{\code{di}}{: Distance of each observation to its assigned cluster-center.}
+##'  \item{\code{outliers}}{: A vector of integers with indices for each observation
 ##' considered as outlier.}
 ##' }
 #'
@@ -49,18 +49,18 @@
 #' oldpar <- par(mfrow = c(1, 2))
 #' 
 #' plot(X,type = "n", main = "ktaucenters (Robust) \n outliers: solid black dots")
-#' points(X[robust$cluster==1, ], col = 2)
-#' points(X[robust$cluster==2, ], col = 3)
-#' points(X[robust$cluster==3, ], col = 4)
+#' points(X[robust$cluster == 1, ], col = 2)
+#' points(X[robust$cluster == 2, ], col = 3)
+#' points(X[robust$cluster == 3, ], col = 4)
 #' points(X[robust$outliers, 1], X[robust$outliers, 2], pch = 19)
 #'
 #' # Classical (non Robust) algorithm
 #' non_robust <- kmeans(X, centers = 3, nstart = 100)
 #'
 #' plot(X, type = "n", main = "kmeans (Classical)")
-#' points(X[non_robust$cluster==1, ], col = 2)
-#' points(X[non_robust$cluster==2, ], col = 3)
-#' points(X[non_robust$cluster==3, ], col = 4)
+#' points(X[non_robust$cluster == 1, ], col = 2)
+#' points(X[non_robust$cluster == 2, ], col = 3)
+#' points(X[non_robust$cluster == 3, ], col = 4)
 #'
 #' par(oldpar)
 #' @references Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019). 
@@ -130,41 +130,30 @@ ktaucenters <- function(X,
     
     centers <- centers0
     
-    ret_ktau <- ktaucenters_run(X, centers, tolmin, NiterMax)
+    ret_ktau <- .ktaucenters_run(X, centers, tolmin, NiterMax)
 
     tau <- ret_ktau$tau;
-    niter = ret_ktau$iter
+    niter <- ret_ktau$iter
     
     if (tau < taumin) {
       taumin <- tau
-      
       best_tau <- tau
       best_ret_ktau <- ret_ktau
     }
   }
+
+  # Outlier detection
+  best_ret_ktau <- .flag_outliers(cutoff, 0.5, best_ret_ktau)
   
-  newClusters <- best_ret_ktau$cluster
-  squaredi <- (best_ret_ktau$di) ^ 2
-  robustScale <- Mscale(u = sqrt(squaredi),
-                       c = normal_consistency_constants(p),
-                       b = 0.5)
-  
-  outliers <- c()
-  value <- qchisq(cutoff, df = p)
-  for (j in 1:K) {
-    indices <- which(newClusters == j)
-    booleansubindices <- (squaredi[indices] / (robustScale ^ 2)) > value
-    outliersk <- indices[booleansubindices]
-    outliers <- c(outliersk, outliers)
-  }
-  best_ret_ktau$outliers <- outliers
-  best_ret_ktau
+  return(best_ret_ktau)
 }
 
-#' Robust Clustering algorithm.
+#' ktaucentersfast
+#'
+#' Robust and efficient version of Kmeans algorithm for clustering based on centers.
 #' @param x numeric matrix of size n x p, or an object that can be coerced to a matrix
 #' (such as a numeric vector or a data frame with all numeric columns).
-#' @param centers either the number of clusters, say *k*, or a matrix of initial
+#' @param centers either the number of clusters, say \strong{k}, or a matrix of initial
 #'(distinct) cluster centers. If a number, a random set of distinct rows in \code{x}
 #' is chosen as the initial centers.
 #' @param nstart if centers is a number, how many random sets should be chosen?
@@ -173,16 +162,18 @@ ktaucenters <- function(X,
 #' @param max_iter the maximum number of iterations allowed.
 #' @param max_tol maximum tolerance parameter used for the algorithm as stopping rule.
 #' @param cutoff quantile of chi-square distribution to be used as a threshold for
-#' outliers detection, defaults to 0.999
-#' @return A list including the estimated k centers and labels for the observations
+#' outliers detection, defaults to 0.999.
+#' @return A list with the following components:
 ##' \itemize{
 ##'  \item{\code{centers}}{: A matrix of cluster centers.}
 ##'  \item{\code{cluster}}{: A vector of integer (from 1:k) indicating the cluster to
 ##' which each point is allocated.}
-##'  \item{\code{iter}}{: number of iterations until convergence is achieved
-##' or maximun number of iteration is reached}
-##'  \item{\code{di}}{: distance of each observation to its assigned cluster-center}
-##'  \item{\code{outliers}}{: indices observation that can be considered as outliers}
+##' \item{\code{tau}}{: \eqn{\tau} scale value.}
+##'  \item{\code{iter}}{: Number of iterations until convergence is achieved
+##' or maximum number of iteration reached.}
+##'  \item{\code{di}}{: Distance of each observation to its assigned cluster-center}
+##'  \item{\code{outliers}}{: A vector of integers with indices for each observation
+##' considered as outlier.}
 ##' }
 #'
 #' @examples
@@ -195,25 +186,25 @@ ktaucenters <- function(X,
 #' X[sample(1:300,60), ] <- matrix(runif( 40, 3 * min(X), 3 * max(X) ),
 #'                                 ncol = 2, nrow = 60)
 #'
-#' robust <- ktaucenters(
-#'      X, K = 3, centers = X[sample(1:300, 3), ],
-#'      tolmin = 1e-3, NiterMax = 100)
+#' robust <- ktaucentersfast(
+#'      X, centers = X[sample(1:300, 3), ],
+#'      max_tol = 1e-3, max_iter = 100)
 #'
 #' oldpar <- par(mfrow = c(1, 2))
 #' 
 #' plot(X,type = "n", main = "ktaucenters (Robust) \n outliers: solid black dots")
-#' points(X[robust$cluster==1, ], col = 2)
-#' points(X[robust$cluster==2, ], col = 3)
-#' points(X[robust$cluster==3, ], col = 4)
+#' points(X[robust$cluster == 1, ], col = 2)
+#' points(X[robust$cluster == 2, ], col = 3)
+#' points(X[robust$cluster == 3, ], col = 4)
 #' points(X[robust$outliers, 1], X[robust$outliers, 2], pch = 19)
 #'
 #' # Classical (non Robust) algorithm
 #' non_robust <- kmeans(X, centers = 3, nstart = 100)
 #'
 #' plot(X, type = "n", main = "kmeans (Classical)")
-#' points(X[non_robust$cluster==1, ], col = 2)
-#' points(X[non_robust$cluster==2, ], col = 3)
-#' points(X[non_robust$cluster==3, ], col = 4)
+#' points(X[non_robust$cluster == 1, ], col = 2)
+#' points(X[non_robust$cluster == 2, ], col = 3)
+#' points(X[non_robust$cluster == 3, ], col = 4)
 #'
 #' par(oldpar)
 #' @references Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019). 
@@ -273,7 +264,7 @@ ktaucentersfast <- function(x,
   }
   
   if (use_robin) {
-    robin_centers_idx <- robinden(distance(x), n_clusters, 10)$centers + 1
+    robin_centers_idx <- robinden(.distance(x), n_clusters, 10)$centers + 1
     robin_centers <- x[robin_centers_idx,]
     init_centers <- append(init_centers, list(robin_centers))
   }
@@ -282,7 +273,7 @@ ktaucentersfast <- function(x,
   best_tau <- Inf
   for (iter in seq_along(init_centers)) {
     current_run <-
-      ktaucenters_run(x, init_centers[[iter]], max_tol, max_iter)
+      .ktaucenters_run(x, init_centers[[iter]], max_tol, max_iter)
     if (current_run$tau < best_tau) {
       best_run <- current_run
       best_tau <- best_run$tau
@@ -290,7 +281,7 @@ ktaucentersfast <- function(x,
   }
   
   # Outlier detection
-  best_run <- flag_outliers(cutoff, 0.5, best_run)
+  best_run <- .flag_outliers(cutoff, 0.5, best_run)
   
   return(best_run)
 }

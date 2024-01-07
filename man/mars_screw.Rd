@@ -5,8 +5,8 @@
 \alias{mars_screw}
 \title{Intensity and saturation values of a picture from mars.}
 \format{
-A list containing information about  pixels of a picture form mars
-mainly containing red sand and  metal form Rover itself. List include
+A list containing information about  pixels of a picture form mars mainly
+containing red sand and  metal form Rover itself. List include
 
 \itemize{
 \item SI_matrix: A matrix with 5063 rows and 128 columns.

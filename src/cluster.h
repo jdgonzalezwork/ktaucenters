@@ -5,6 +5,6 @@
 using namespace Rcpp;
 
 List cluster_location(NumericMatrix, NumericMatrix);
-IntegerVector cluster_counter(IntegerVector, const std::size_t);
+IntegerVector cluster_counter(IntegerVector, const int);
 
 #endif

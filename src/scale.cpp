@@ -90,23 +90,24 @@ double normal_consistency_constants(const std::size_t p) {
   return vaux(p - 1);
 }
 
-//' Tuning constant for \eqn{\tau}-estimator
-//'
-//' Tuning constant approximation for \eqn{\tau}-estimator to reach 90%
-//' efficiency
-//'
-//' @param p dimension where observation lives.
-//'
-//' @return
-//' Tuning constant for \eqn{\tau}-estimator.
-//'
-//' @references
-//' Maronna, R. A. and Yohai, V. J. (2017). Robust and efficient estimation of
-//' multivariate scatter and location. Computational Statistics & Data Analysis,
-//' 109:64–75.
-//'
-// [[Rcpp::export]]
-double const_c2(const std::size_t p) { return 2.9987 * pow(p, -0.4647); }
+double const_c2(const std::size_t p) {
+  //' Tuning constant for \eqn{\tau}-estimator
+  //'
+  //' Tuning constant approximation for \eqn{\tau}-estimator to reach 90%
+  //' efficiency
+  //'
+  //' @param p dimension where observation lives.
+  //'
+  //' @return
+  //' Tuning constant for \eqn{\tau}-estimator.
+  //'
+  //' @references
+  //' Maronna, R. A. and Yohai, V. J. (2017). Robust and efficient estimation of
+  //' multivariate scatter and location. Computational Statistics & Data
+  //' Analysis, 109:64–75.
+
+  return 2.9987 * pow(p, -0.4647);
+}
 
 //' M scale
 //'
@@ -114,11 +115,17 @@ double const_c2(const std::size_t p) { return 2.9987 * pow(p, -0.4647); }
 //'
 //' @param u numeric vector with positive values.
 //' @param c a tuning constant. If consistency to standard normal distribution
-//' is desired use \code{\link{normal_consistency_constants}}
+//' is desired use \code{\link{normal_consistency_constants}}.
 //' @param b the desired break down point.
 //'
 //' @return
-//' M scale value
+//' M scale value.
+//'
+//' @examples
+//' Mscale(u = rnorm(100), c = 1, b = 0.5)
+//'
+//' @references Maronna, R. A., Martin, R. D., Yohai, V. J., & Salibian-Barrera,
+//' M. (2018). Robust statistics: theory and methods (with R). Wiley.
 //'
 //'@export
 // [[Rcpp::export]]
@@ -156,36 +163,34 @@ double Mscale(NumericVector u, const double c, const double b) {
   return sn;
 }
 
-//' \eqn{\tau} scale
-//'
-//' The \eqn{\tau} scale of an univariate sample.
-//'
-//' @param u numeric vector with positive values.
-//' @param s M scale for the same univariate sample (u).
-//' @param c tuning constant to regulate estimator's efficiency.
-//'
-//' @return
-//' \eqn{\tau} scale value
-//'
-// [[Rcpp::export]]
 double tau_scale(NumericVector u, const double c, const double s) {
+  //' \eqn{\tau} scale
+  //'
+  //' The \eqn{\tau} scale of an univariate sample.
+  //'
+  //' @param u numeric vector with positive values.
+  //' @param s M scale for the same univariate sample (u).
+  //' @param c tuning constant to regulate estimator's efficiency.
+  //'
+  //' @return
+  //' \eqn{\tau} scale value
+
   return s * sqrt(mean(rhoOpt(u / s, c)));
 }
 
-//' Weight function
-//'
-//' @param distances numeric vector with distances from each point to its
-//' cluster center.
-//' @param c1 tuning constant used for m scale estimation.
-//' @param c2 tuning constant used for \eqn{\tau} scale estimation.
-//' @param s M scale for the same vector of distances.
-//'
-//' @return
-//' Numeric vector with the weight for each observation
-//'
-// [[Rcpp::export]]
 NumericVector wni(NumericVector distances, const double c1, const double c2,
                   const double s) {
+
+  //' Weight function
+  //'
+  //' @param distances numeric vector with distances from each point to its
+  //' cluster center.
+  //' @param c1 tuning constant used for m scale estimation.
+  //' @param c2 tuning constant used for \eqn{\tau} scale estimation.
+  //' @param s M scale for the same vector of distances.
+  //'
+  //' @return
+  //' Numeric vector with the weight for each observation
 
   NumericVector dnor = distances / s;
   const double A = sum(2 * rhoOpt(dnor, c2) - psiOpt(dnor, c2) * dnor);
@@ -195,17 +200,16 @@ NumericVector wni(NumericVector distances, const double c1, const double c2,
                 (A * psiOpt(dnor, c1) + B * psiOpt(dnor, c2)) / dnor);
 }
 
-//' Weight factor
-//'
-//' @param wni numeric vector with the weight for each observation.
-//' @param clusters integer vector with the cluster location for each
-//' observation.
-//'
-//' @return
-//' Numeric vector with the weight factor for each observation
-//'
-// [[Rcpp::export]]
 NumericVector weight_factor(NumericVector wni, IntegerVector clusters) {
+
+  //' Weight factor
+  //'
+  //' @param wni numeric vector with the weight for each observation.
+  //' @param clusters integer vector with the cluster location for each
+  //' observation.
+  //'
+  //' @return
+  //' Numeric vector with the weight factor for each observation
 
   if (wni.size() != clusters.size()) {
     stop("Both wni and clusters must have same size.");
@@ -234,26 +238,25 @@ NumericVector weight_factor(NumericVector wni, IntegerVector clusters) {
   return out;
 }
 
-//' Computes new cluster centers
-//'
-//' @param x numeric matrix of size n x p with all observations.
-//' @param weights numeric vector of size n with the weight factor for each
-//' observation.
-//' @param cluster_location integer vector of size n with the cluster location
-//' for each observation.
-//' @param n_clusters integer vector of size n with the
-//' cluster location for each ' observation.
-//' @param distances numeric vector of size n with the distances from each
-//' observation to its nearest cluster center.
-//'
-//' @return
-//' Numeric matrix with the new cluster centers.
-//'
-// [[Rcpp::export]]
 NumericMatrix new_centers(NumericMatrix x, NumericVector weights,
                           IntegerVector cluster_location,
                           const std::size_t n_clusters,
                           NumericVector distances) {
+
+  //' Computes new cluster centers
+  //'
+  //' @param x numeric matrix of size n x p with all observations.
+  //' @param weights numeric vector of size n with the weight factor for each
+  //' observation.
+  //' @param cluster_location integer vector of size n with the cluster location
+  //' for each observation.
+  //' @param n_clusters integer vector of size n with the
+  //' cluster location for each ' observation.
+  //' @param distances numeric vector of size n with the distances from each
+  //' observation to its nearest cluster center.
+  //'
+  //' @return
+  //' Numeric matrix with the new cluster centers.
 
   const std::size_t p = x.cols();
 
@@ -263,7 +266,7 @@ NumericMatrix new_centers(NumericMatrix x, NumericVector weights,
     NumericVector weighted_column = x.column(column) * weights;
     NumericVector sums(n_clusters, 0.0);
 
-    for (std::size_t idx = 0; idx != cluster_location.size(); ++idx) {
+    for (int idx = 0; idx != cluster_location.size(); ++idx) {
       sums[cluster_location[idx] - 1] += weighted_column[idx];
     }
 
@@ -277,7 +280,7 @@ NumericMatrix new_centers(NumericMatrix x, NumericVector weights,
 
   if (any(empty_clusters).is_true()) {
     std::vector<int> empty_pos;
-    for (std::size_t i = 0; i < empty_clusters.size(); ++i) {
+    for (int i = 0; i < empty_clusters.size(); ++i) {
       if (empty_clusters[i]) {
         empty_pos.push_back(i);
       }

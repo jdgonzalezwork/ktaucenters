@@ -2,22 +2,21 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-//' Find the k Nearest Neighbors
-//'
-//' \strong{Ties}: If the kth and the (k+1)th nearest neighbor are tied, then
-//' the neighbor found first is returned and the other one is ignored.
-//'
-//' @param D a distance matrix, which contains the distances between the rows of
-//' a matrix.
-//' @param k number of neighbors to find.
-//'
-//' @return A list with the following components:
-//' \item{dist }{a matrix with distances. }
-//' \item{id }{a matrix with indices of the k nearest neighbors. }
-//' \item{k }{number neighbors used. }
-//'
-// [[Rcpp::export]]
 List dist_to_kNN(NumericMatrix D, const std::size_t k) {
+  //' Find the k Nearest Neighbors
+  //'
+  //' \strong{Ties}: If the kth and the (k+1)th nearest neighbor are tied, then
+  //' the neighbor found first is returned and the other one is ignored.
+  //'
+  //' @param D a distance matrix, which contains the distances between the rows
+  //' of a matrix.
+  //' @param k number of neighbors to find.
+  //'
+  //' @return A list with the following components:
+  //' \item{dist }{a matrix with distances. }
+  //' \item{id }{a matrix with indices of the k nearest neighbors. }
+  //' \item{k }{number neighbors used. }
+
   const std::size_t n = D.nrow();
 
   IntegerMatrix id(no_init(n, k));

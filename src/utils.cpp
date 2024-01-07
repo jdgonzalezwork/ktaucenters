@@ -3,14 +3,13 @@
 #include <queue>
 using namespace Rcpp;
 
-//' Computes the median of a numeric vector
-//'
-//' @param x numeric vector.
-//'
-//' @return median of a numeric vector.
-//'
-// [[Rcpp::export]]
 double median_cpp(NumericVector x) {
+
+  //' Computes the median of a numeric vector
+  //'
+  //' @param x numeric vector.
+  //'
+  //' @return median of a numeric vector.
   std::size_t size = x.size();
   std::sort(x.begin(), x.end());
   if (size % 2 == 0)
@@ -71,19 +70,18 @@ private:
   NumericVector data;
 };
 
-//' Find the first nth indices from a vector
-//'
-//' @param v a numeric vector from which indices are found.
-//' @param n number of indices to find.
-//' @param decreasing boolean value indicating if the vector must be in
-//' decreasing order
-//'
-//' @return
-//' A vector with first nth indices.
-//'
-// [[Rcpp::export]]
 IntegerVector top_index(NumericVector v, int n, bool decreasing) {
-  std::size_t size = v.size();
+
+  //' Find the first nth indices from a vector
+  //'
+  //' @param v a numeric vector from which indices are found.
+  //' @param n number of indices to find.
+  //' @param decreasing boolean value indicating if the vector must be in
+  //' decreasing order
+  //'
+  //' @return
+  //' A vector with first nth indices.
+  int size = v.size();
 
   // not interesting case. Less data than n
   if (size < n) {
@@ -91,22 +89,21 @@ IntegerVector top_index(NumericVector v, int n, bool decreasing) {
   }
 
   IndexQueue q(v, decreasing);
-  for (std::size_t i = 0; i < n; ++i)
+  for (int i = 0; i < n; ++i)
     q.push(i);
-  for (std::size_t i = n; i < size; ++i)
+  for (int i = n; i < size; ++i)
     q.input(i);
   return q;
 }
 
-//' Estimates maximum tolerance between two given matrix row wise
-//'
-//' @param x numeric matrix.
-//' @param y numeric matrix.
-//'
-//' @return max euclidean difference two given matrix row wise.
-//'
-// [[Rcpp::export]]
 double max_tolerance(NumericMatrix x, NumericMatrix y) {
+
+  //' Estimates maximum tolerance between two given matrix row wise
+  //'
+  //' @param x numeric matrix.
+  //' @param y numeric matrix.
+  //'
+  //' @return max euclidean difference two given matrix row wise.
 
   if ((x.nrow() != y.nrow()) || (x.ncol() != y.ncol())) {
     stop("Both matrices must have same dimension");

@@ -10,13 +10,21 @@ Mscale(u, c, b)
 \item{u}{numeric vector with positive values.}
 
 \item{c}{a tuning constant. If consistency to standard normal distribution
-is desired use \code{\link{normal_consistency_constants}}}
+is desired use \code{\link{normal_consistency_constants}}.}
 
 \item{b}{the desired break down point.}
 }
 \value{
-M scale value
+M scale value.
 }
 \description{
 The M scale of an univariate sample.
+}
+\examples{
+Mscale(u = rnorm(100), c = 1, b = 0.5)
+
+}
+\references{
+Maronna, R. A., Martin, R. D., Yohai, V. J., & Salibian-Barrera,
+M. (2018). ' Robust statistics: theory and methods (with R). Wiley.ç
 }

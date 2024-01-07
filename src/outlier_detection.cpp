@@ -13,11 +13,12 @@ using namespace Rcpp;
 //' @return
 //' Numeric vector with the weight factor for each observation
 //'
-// [[Rcpp::export]]
+// [[Rcpp::export(".flag_outliers")]]
 List flag_outliers(const double cutoff, const double b, List ktau) {
   NumericVector distances = ktau["di"];
   NumericVector squared_distances = pow(distances, 2);
-  const std::size_t p = ktau["p"];
+  NumericMatrix centers = ktau["centers"];
+  const std::size_t p = centers.cols();
   double thr = R::qchisq(cutoff, p, true, false);
   double c = normal_consistency_constants(p);
   double robust_scale = Mscale(distances, c, b);

@@ -2,7 +2,7 @@
 % Please edit documentation in R/ktaucenters.R
 \name{ktaucentersfast}
 \alias{ktaucentersfast}
-\title{Robust Clustering algorithm.}
+\title{ktaucentersfast}
 \usage{
 ktaucentersfast(
   x,
@@ -16,9 +16,12 @@ ktaucentersfast(
 )
 }
 \arguments{
-\item{x}{numeric matrix of size n x p, or an object that can be coerced to a matrix (such as a numeric vector or a data frame with all numeric columns).}
+\item{x}{numeric matrix of size n x p, or an object that can be coerced to a matrix
+(such as a numeric vector or a data frame with all numeric columns).}
 
-\item{centers}{either the number of clusters, say *k*, or a matrix of initial (distinct) cluster centers. If a number, a random set of (distinct) rows in x is chosen as the initial centers.}
+\item{centers}{either the number of clusters, say \strong{k}, or a matrix of initial
+(distinct) cluster centers. If a number, a random set of distinct rows in \code{x}
+is chosen as the initial centers.}
 
 \item{nstart}{if centers is a number, how many random sets should be chosen?}
 
@@ -30,28 +33,59 @@ ktaucentersfast(
 
 \item{max_tol}{maximum tolerance parameter used for the algorithm as stopping rule.}
 
-\item{cutoff}{quantile of chi-square distribution to be used as a threshold for outliers detection, defaults to 0.999}
+\item{cutoff}{quantile of chi-square distribution to be used as a threshold for
+outliers detection, defaults to 0.999.}
 }
 \value{
-A list including the estimated k centers and labels for the observations
+A list with the following components:
 \itemize{
- \item{\code{centers}}{:   matrix of size K x p, with the estimated K centers.}
- \item{\code{cluster}}{: array of size n x 1  integers labels between 1 and K.}
- \item{\code{tauPath}}{: sequence of tau scale values at each iterations.}
- \item{\code{Wni}}{: numeric array of size n x 1 indicating the weights
-associated to each observation.}
- \item{\code{emptyClusterFlag}}{: a boolean value. True means that in some
-iteration there were clusters totally empty}
- \item{\code{niter}}{: number of iterations until convergence is achieved
-or maximun number of iteration is reached}
- \item{\code{di}}{: distance of each observation to its assigned cluster-center}
- \item{\code{outliers}}{: indices observation that can be considered as outliers}
+ \item{\code{centers}}{: A matrix of cluster centers.}
+ \item{\code{cluster}}{: A vector of integer (from 1:k) indicating the cluster to
+which each point is allocated.}
+\item{\code{tau}}{: \eqn{\tau} scale value.}
+ \item{\code{iter}}{: Number of iterations until convergence is achieved
+or maximum number of iteration reached.}
+ \item{\code{di}}{: Distance of each observation to its assigned cluster-center}
+ \item{\code{outliers}}{: A vector of integers with indices for each observation
+considered as outlier.}
 }
 }
 \description{
-Robust Clustering algorithm.
+Robust and efficient version of Kmeans algorithm for clustering based on centers.
+}
+\examples{
+# Generate synthetic data (three clusters well separated)
+Z <- rnorm(600)
+mues <- rep(c(-3, 0, 3), 200)
+X <- matrix(Z + mues, ncol = 2)
+
+# Generate 60 synthetic outliers (contamination level 20\%)
+X[sample(1:300,60), ] <- matrix(runif( 40, 3 * min(X), 3 * max(X) ),
+                                ncol = 2, nrow = 60)
+
+robust <- ktaucentersfast(
+     X, centers = X[sample(1:300, 3), ],
+     max_tol = 1e-3, max_iter = 100)
+
+oldpar <- par(mfrow = c(1, 2))
+
+plot(X,type = "n", main = "ktaucenters (Robust) \n outliers: solid black dots")
+points(X[robust$cluster == 1, ], col = 2)
+points(X[robust$cluster == 2, ], col = 3)
+points(X[robust$cluster == 3, ], col = 4)
+points(X[robust$outliers, 1], X[robust$outliers, 2], pch = 19)
+
+# Classical (non Robust) algorithm
+non_robust <- kmeans(X, centers = 3, nstart = 100)
+
+plot(X, type = "n", main = "kmeans (Classical)")
+points(X[non_robust$cluster == 1, ], col = 2)
+points(X[non_robust$cluster == 2, ], col = 3)
+points(X[non_robust$cluster == 3, ], col = 4)
+
+par(oldpar)
 }
 \references{
-Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019).
+Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019). 
 Robust Clustering Using Tau-Scales. arXiv preprint arXiv:1906.08198.
 }

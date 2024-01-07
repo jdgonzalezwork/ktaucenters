@@ -13,7 +13,7 @@ using namespace Rcpp;
 //' @return
 //' A numeric matrix with the distances between the rows of a matrix.
 //'
-// [[Rcpp::export]]
+// [[Rcpp::export(.distance)]]
 NumericMatrix distance(NumericMatrix x) {
   const std::size_t n = x.nrow();
   double d;

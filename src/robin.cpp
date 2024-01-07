@@ -3,17 +3,18 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-//' Estimates the local points density.
-//'
-//' @param D a distance matrix, which contains the distances between the rows of
-//' a matrix.
-//' @param k number of neighbors to calculate local point density.
-//'
-//' @return
-//' A vector containing the density values for each point.
-//'
-// [[Rcpp::export]]
 NumericVector point_density(NumericMatrix D, const std::size_t k) {
+
+  //' Estimates the local points density.
+  //'
+  //' @param D a distance matrix, which contains the distances between the rows
+  //' of a matrix.
+  //' @param k number of neighbors to calculate local point
+  //' density.
+  //'
+  //' @return
+  //' A vector containing the density values for each point.
+
   const std::size_t n = D.nrow();
 
   List knn = dist_to_kNN(D, k);
@@ -32,18 +33,16 @@ NumericVector point_density(NumericMatrix D, const std::size_t k) {
   return out;
 }
 
-//' Utility function to estimate robinden center
-//'
-//' @param idp a vector with containing the inverse density each point.
-//' @param indices vector with sorted indices.
-//' @param crit_robin critical robin value.
-//'
-//' @return
-//' Index of the cluster center
-//'
-// [[Rcpp::export]]
 std::size_t robin_center(NumericVector idp, IntegerVector indices,
                          const double crit_robin) {
+  //' Utility function to estimate robinden center
+  //'
+  //' @param idp a vector with containing the inverse density each point.
+  //' @param indices vector with sorted indices.
+  //' @param crit_robin critical robin value.
+  //'
+  //' @return
+  //' Index of the cluster center
 
   NumericVector idp_sorted_points = idp[indices];
 
@@ -66,12 +65,15 @@ std::size_t robin_center(NumericVector idp, IntegerVector indices,
 //' @param D a distance matrix, which contains the distances between the rows of
 //' a matrix.
 //' @param n_clusters number of cluster centers to find.
-//' @param mp number of nearest neighbors to compute point density
+//' @param mp number of nearest neighbors to compute point density.
 //'
 //' @return A list with the following components:
-//' \item{centers }{A numeric vector with the initial cluster centers indices}
-//' \item{idpoints }{A real vector containing the inverse of point density
-//' estimation}
+//' \itemize{
+//' \item{\code{centers}}{: A numeric vector with the initial cluster centers
+//' indices.}
+//' \item{\code{idpoints}}{: A real vector containing the inverse of point
+//' density estimation.}
+//' }
 //'
 //' @details
 //' The centers are the observations located in the most dense region
@@ -83,6 +85,24 @@ std::size_t robin_center(NumericVector idp, IntegerVector indices,
 //' @note This is a slightly modified version of ROBIN algorithm
 //' implementation done by Sarka Brodinova <sarka.brodinova@tuwien.ac.at>.
 //' @author Juan Domingo Gonzalez <juanrst@hotmail.com>
+//'
+//' @examples
+//' # Generate synthetic data (7 cluster well separated)
+//' K <- 5
+//' nk <- 100
+//' Z <- rnorm(2 * K * nk)
+//' mues <- rep(5 * -floor(K/2):floor(K/2), 2 * nk * K)
+//' X <-  matrix(Z + mues, ncol = 2)
+//'
+//' # Generate synthetic outliers (contamination level 20%)
+//' X[sample(1:(nk * K), (nk * K) * 0.2), ] <-
+//'   matrix(runif((nk * K) * 0.2 * 2, 3 * min(X), 3 * max(X)),
+//'          ncol = 2,
+//'          nrow = (nk * K)* 0.2)
+//' res <- robinden(D = as.matrix(dist(X)), n_clusters = K, mp = 10);
+//' # plot the Initial centers found
+//' plot(X)
+//' points(X[res$centers, ], pch = 19, col = 4, cex = 2)
 //'
 //' @references Hasan AM, et al. Robust partitional clustering by
 //' outlier and density insensitive seeding. Pattern Recognition Letters,

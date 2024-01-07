@@ -23,7 +23,6 @@ using namespace Rcpp;
 //'  }
 //' \item{clusters }{integer vector of size n with the cluster location for each
 //' observation. }
-//' \item{p }{dimension where all observations live. }
 //'
 //'@references
 //' [1] Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019).
@@ -33,7 +32,7 @@ using namespace Rcpp;
 //' of multivariate scatter and location.Computational Statistics &Data
 //' Analysis, 109 : 64–75.
 //'
-// [[Rcpp::export]]
+// [[Rcpp::export(".ktaucenters_run")]]
 List ktaucenters_run(NumericMatrix x, NumericMatrix centers,
                      const double tolerance, const std::size_t max_iter) {
 
@@ -78,7 +77,7 @@ List ktaucenters_run(NumericMatrix x, NumericMatrix centers,
     warning("Algorithm did not converge after %i iterations", max_iter);
   }
 
-  return (List::create(_["tau"] = tau, _["iter"] = iter, _["di"] = distance_min,
-                       _["centers"] = centers, _["clusters"] = clusters,
-                       _["p"] = p));
+  return (List::create(_["centers"] = centers, _["cluster"] = clusters,
+                       _["tau"] = tau, _["di"] = distance_min,
+                       _["iter"] = iter));
 }

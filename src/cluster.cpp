@@ -2,20 +2,20 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-//' Returns each observation's cluster location based on the euclidean distance
-//' between the observation and cluster centers.
-//'
-//' @param x a numeric matrix with observations.
-//' @param centers a numeric matrix with observations with cluster's centers
-//' coordinates.
-//'
-//' @return A list with the following components:
-//' \item{clusters }{a vector indicating each point observation's cluster. }
-//' \item{distance }{a vector with the distance from each
-//' observation to its corresponding cluster center. }
-//'
-// [[Rcpp::export]]
 List cluster_location(NumericMatrix x, NumericMatrix centers) {
+
+  //' Returns each observation's cluster location based on the euclidean
+  // distance
+  //' between the observation and cluster centers.
+  //'
+  //' @param x a numeric matrix with observations.
+  //' @param centers a numeric matrix with observations with cluster's centers
+  //' coordinates.
+  //'
+  //' @return A list with the following components:
+  //' \item{clusters }{a vector indicating each point observation's cluster. }
+  //' \item{distance }{a vector with the distance from each
+  //' observation to its corresponding cluster center. }
 
   const std::size_t k = centers.rows();
   const std::size_t n = x.rows();
@@ -44,18 +44,18 @@ List cluster_location(NumericMatrix x, NumericMatrix centers) {
   return List::create(_["clusters"] = clusters, _["distance"] = distance);
 }
 
-//' Counts the number of observations per cluster
-//'
-//' @param cluster_location a vector with positive intergers containing each
-//' point observation's cluster.
-//' @param n_clusters total number of clusters
-//'
-//' @return
-//' Vector with number of observations per cluster
-//'
-// [[Rcpp::export]]
 IntegerVector cluster_counter(IntegerVector cluster_location,
-                              const std::size_t n_clusters) {
+                              const int n_clusters) {
+
+  //' Counts the number of observations per cluster
+  //'
+  //' @param cluster_location a vector with positive intergers containing each
+  //' point observation's cluster.
+  //' @param n_clusters total number of clusters
+  //'
+  //' @return
+  //' Vector with number of observations per cluster
+
   IntegerVector counter(n_clusters);
   for (const auto &obs_cluster : cluster_location) {
     if (obs_cluster > 0 && obs_cluster <= n_clusters)

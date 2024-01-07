@@ -2,8 +2,8 @@
 #'
 #' A dataset containing the Intensity and Saturation values of a picture from Mars
 #' taken from Rover Curiosity.
-#' @format A list containing information about  pixels of a picture form mars
-#' mainly containing red sand and  metal form Rover itself. List include
+#' @format A list containing information about  pixels of a picture form mars mainly
+#' containing red sand and  metal form Rover itself. List include:
 #'
 #' \itemize{
 #' \item SI_matrix: A matrix with 5063 rows and 128 columns.

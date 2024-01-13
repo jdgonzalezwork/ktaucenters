@@ -26,5 +26,5 @@ Mscale(u = rnorm(100), c = 1, b = 0.5)
 }
 \references{
 Maronna, R. A., Martin, R. D., Yohai, V. J., & Salibian-Barrera,
-M. (2018). ' Robust statistics: theory and methods (with R). Wiley.ç
+M. (2018). Robust statistics: theory and methods (with R). Wiley.
 }

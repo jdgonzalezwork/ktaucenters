@@ -65,7 +65,7 @@
 #' Quasi optimal \eqn{\rho} function
 #'
 #' @param x numeric vector with positive values.
-#' @param c tunning constant.
+#' @param cc tunning constant.
 #'
 #' @return
 #' Numeric vector with quasi optimal \eqn{\rho} computation for each element
@@ -77,36 +77,36 @@
 #' 17(3), 659-682.
 #'
 #'@export
-rhoOpt <- function(x, c) {
-    .Call('_ktaucenters_rhoOpt', PACKAGE = 'ktaucenters', x, c)
+rhoOpt <- function(x, cc) {
+    .Call('_ktaucenters_rhoOpt', PACKAGE = 'ktaucenters', x, cc)
 }
 
 #' Derivative of the quasi optimal \eqn{\rho} function
 #'
 #' @param x numeric vector with positive values.
-#' @param c tunning constant.
+#' @param cc tunning constant.
 #'
 #' @return
 #' Numeric vector with the derivative of the quasi optimal \eqn{\rho}
 #' computation for each element of x.
 #'
 #'@export
-psiOpt <- function(x, c) {
-    .Call('_ktaucenters_psiOpt', PACKAGE = 'ktaucenters', x, c)
+psiOpt <- function(x, cc) {
+    .Call('_ktaucenters_psiOpt', PACKAGE = 'ktaucenters', x, cc)
 }
 
 #' Second derivative of the quasi \eqn{\rho} function
 #'
 #' @param x numeric vector with positive values.
-#' @param c tunning constant.
+#' @param cc tunning constant.
 #'
 #' @return
 #' Numeric vector with the second derivative of the quasi optimal \eqn{\rho}
 #' computation for each element of x.
 #'
 #'@export
-derpsiOpt <- function(x, c) {
-    .Call('_ktaucenters_derpsiOpt', PACKAGE = 'ktaucenters', x, c)
+derpsiOpt <- function(x, cc) {
+    .Call('_ktaucenters_derpsiOpt', PACKAGE = 'ktaucenters', x, cc)
 }
 
 #' Robust Initialization based on Inverse Density estimator (ROBINDEN)
@@ -119,12 +119,10 @@ derpsiOpt <- function(x, c) {
 #' @param mp number of nearest neighbors to compute point density.
 #'
 #' @return A list with the following components:
-#' \itemize{
 #' \item{\code{centers}}{: A numeric vector with the initial cluster centers
 #' indices.}
 #' \item{\code{idpoints}}{: A real vector containing the inverse of point
 #' density estimation.}
-#' }
 #'
 #' @details
 #' The centers are the observations located in the most dense region

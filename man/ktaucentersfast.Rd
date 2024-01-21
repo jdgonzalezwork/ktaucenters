@@ -38,7 +38,6 @@ outliers detection, defaults to 0.999.}
 }
 \value{
 A list with the following components:
-\itemize{
  \item{\code{centers}}{: A matrix of cluster centers.}
  \item{\code{cluster}}{: A vector of integer (from 1:k) indicating the cluster to
 which each point is allocated.}
@@ -48,7 +47,6 @@ or maximum number of iteration reached.}
  \item{\code{di}}{: Distance of each observation to its assigned cluster-center}
  \item{\code{outliers}}{: A vector of integers with indices for each observation
 considered as outlier.}
-}
 }
 \description{
 Robust and efficient version of Kmeans algorithm for clustering based on centers.

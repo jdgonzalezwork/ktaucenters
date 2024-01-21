@@ -4,12 +4,12 @@
 \alias{psiOpt}
 \title{Derivative of the quasi optimal \eqn{\rho} function}
 \usage{
-psiOpt(x, c)
+psiOpt(x, cc)
 }
 \arguments{
 \item{x}{numeric vector with positive values.}
 
-\item{c}{tunning constant.}
+\item{cc}{tunning constant.}
 }
 \value{
 Numeric vector with the derivative of the quasi optimal \eqn{\rho}

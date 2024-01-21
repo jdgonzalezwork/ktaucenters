@@ -5,7 +5,7 @@ using namespace Rcpp;
 //' Quasi optimal \eqn{\rho} function
 //'
 //' @param x numeric vector with positive values.
-//' @param c tunning constant.
+//' @param cc tunning constant.
 //'
 //' @return
 //' Numeric vector with quasi optimal \eqn{\rho} computation for each element
@@ -18,16 +18,16 @@ using namespace Rcpp;
 //'
 //'@export
 // [[Rcpp::export]]
-NumericVector rhoOpt(NumericVector x, const double c) {
+NumericVector rhoOpt(NumericVector x, const double cc) {
   NumericVector out(no_init(x.size()));
 
   NumericVector::iterator out_it = out.begin();
   for (const auto &x_it : x) {
-    if (fabs(x_it) <= 2 * c) {
-      *out_it = 0.5 * pow(x_it / c, 2) / 3.25;
-    } else if (fabs(x_it) <= 3 * c) {
-      *out_it = (1.792 - 0.972 * pow(x_it / c, 2) + 0.432 * pow(x_it / c, 4) -
-                 0.052 * pow(x_it / c, 6) + 0.002 * pow(x_it / c, 8)) /
+    if (fabs(x_it) <= 2 * cc) {
+      *out_it = 0.5 * pow(x_it / cc, 2) / 3.25;
+    } else if (fabs(x_it) <= 3 * cc) {
+      *out_it = (1.792 - 0.972 * pow(x_it / cc, 2) + 0.432 * pow(x_it / cc, 4) -
+                 0.052 * pow(x_it / cc, 6) + 0.002 * pow(x_it / cc, 8)) /
                 3.25;
     } else {
       *out_it = 1.0;
@@ -41,7 +41,7 @@ NumericVector rhoOpt(NumericVector x, const double c) {
 //' Derivative of the quasi optimal \eqn{\rho} function
 //'
 //' @param x numeric vector with positive values.
-//' @param c tunning constant.
+//' @param cc tunning constant.
 //'
 //' @return
 //' Numeric vector with the derivative of the quasi optimal \eqn{\rho}
@@ -49,18 +49,19 @@ NumericVector rhoOpt(NumericVector x, const double c) {
 //'
 //'@export
 // [[Rcpp::export]]
-NumericVector psiOpt(NumericVector x, const double c) {
+NumericVector psiOpt(NumericVector x, const double cc) {
   NumericVector out(no_init(x.size()));
 
   NumericVector::iterator out_it = out.begin();
   for (const auto &x_it : x) {
-    if (fabs(x_it) <= 2 * c) {
-      *out_it = x_it / (3.25 * pow(c, 2));
-    } else if (fabs(x_it) <= 3 * c) {
-      *out_it = (-1.944 * x_it / pow(c, 2) + 1.728 * pow(x_it, 3) / pow(c, 4) -
-                 0.312 * pow(x_it, 5) / pow(c, 6) +
-                 0.016 * pow(x_it, 7) / pow(c, 8)) /
-                3.25;
+    if (fabs(x_it) <= 2 * cc) {
+      *out_it = x_it / (3.25 * pow(cc, 2));
+    } else if (fabs(x_it) <= 3 * cc) {
+      *out_it =
+          (-1.944 * x_it / pow(cc, 2) + 1.728 * pow(x_it, 3) / pow(cc, 4) -
+           0.312 * pow(x_it, 5) / pow(cc, 6) +
+           0.016 * pow(x_it, 7) / pow(cc, 8)) /
+          3.25;
     } else {
       *out_it = 0.0;
     }
@@ -73,7 +74,7 @@ NumericVector psiOpt(NumericVector x, const double c) {
 //' Second derivative of the quasi \eqn{\rho} function
 //'
 //' @param x numeric vector with positive values.
-//' @param c tunning constant.
+//' @param cc tunning constant.
 //'
 //' @return
 //' Numeric vector with the second derivative of the quasi optimal \eqn{\rho}
@@ -81,18 +82,18 @@ NumericVector psiOpt(NumericVector x, const double c) {
 //'
 //'@export
 // [[Rcpp::export]]
-NumericVector derpsiOpt(NumericVector x, double c) {
+NumericVector derpsiOpt(NumericVector x, double cc) {
   NumericVector out(no_init(x.size()));
 
   NumericVector::iterator out_it = out.begin();
   for (const auto &x_it : x) {
-    if (fabs(x_it) <= 2 * c) {
-      *out_it = 1.0 / (3.25 * pow(c, 2));
-    } else if (fabs(x_it) <= 3 * c) {
-      *out_it =
-          (-1.944 / pow(c, 2) + 5.184 * pow(x_it, 2) / pow(c, 4) -
-           1.56 * pow(x_it, 4) / pow(c, 6) + 0.112 * pow(x_it, 6) / pow(c, 8)) /
-          3.25;
+    if (fabs(x_it) <= 2 * cc) {
+      *out_it = 1.0 / (3.25 * pow(cc, 2));
+    } else if (fabs(x_it) <= 3 * cc) {
+      *out_it = (-1.944 / pow(cc, 2) + 5.184 * pow(x_it, 2) / pow(cc, 4) -
+                 1.56 * pow(x_it, 4) / pow(cc, 6) +
+                 0.112 * pow(x_it, 6) / pow(cc, 8)) /
+                3.25;
     } else {
       *out_it = 0.0;
     }

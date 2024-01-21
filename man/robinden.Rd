@@ -16,12 +16,10 @@ a matrix.}
 }
 \value{
 A list with the following components:
-\itemize{
 \item{\code{centers}}{: A numeric vector with the initial cluster centers
 indices.}
 \item{\code{idpoints}}{: A real vector containing the inverse of point
 density estimation.}
-}
 }
 \description{
 Searches for k initial cluster seeds for k-means based clustering methods.

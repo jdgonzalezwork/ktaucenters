@@ -4,12 +4,12 @@
 \alias{derpsiOpt}
 \title{Second derivative of the quasi \eqn{\rho} function}
 \usage{
-derpsiOpt(x, c)
+derpsiOpt(x, cc)
 }
 \arguments{
 \item{x}{numeric vector with positive values.}
 
-\item{c}{tunning constant.}
+\item{cc}{tunning constant.}
 }
 \value{
 Numeric vector with the second derivative of the quasi optimal \eqn{\rho}

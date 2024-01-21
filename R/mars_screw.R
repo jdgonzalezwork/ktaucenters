@@ -14,5 +14,5 @@
 #'  \item screw_index: the index corresponding to the screw observation (screw_index=4180)
 #'}
 #'
-#' @source \url{https://www.nasa.gov/mission_pages/msl/multimedia/pia16225.html}
+#' @source \url{https://www.nasa.gov/wp-content/uploads/2023/03/694811main_pia16225-43_full.jpg}
 "mars_screw"

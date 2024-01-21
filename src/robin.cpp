@@ -68,12 +68,10 @@ std::size_t robin_center(NumericVector idp, IntegerVector indices,
 //' @param mp number of nearest neighbors to compute point density.
 //'
 //' @return A list with the following components:
-//' \itemize{
 //' \item{\code{centers}}{: A numeric vector with the initial cluster centers
 //' indices.}
 //' \item{\code{idpoints}}{: A real vector containing the inverse of point
 //' density estimation.}
-//' }
 //'
 //' @details
 //' The centers are the observations located in the most dense region

@@ -21,16 +21,14 @@
 #' to be used as a threshold
 #' for outliers detection, defaults to 0.999.
 #' @return A list with the following components:
-##' \itemize{
-##'  \item{\code{centers}}{: Matrix of size K x p with the estimated K centers.}
-##'  \item{\code{cluster}}{: A vector of integer (from 1:K) indicating the cluster to
-##' which each point is allocated.}
-##'  \item{\code{iter}}{: Number of iterations until convergence is achieved or
-##' maximum number of iterations reached.}
-##'  \item{\code{di}}{: Distance of each observation to its assigned cluster-center.}
-##'  \item{\code{outliers}}{: A vector of integers with indices for each observation
-##' considered as outlier.}
-##' }
+#'  \item{\code{centers}}{: Matrix of size K x p with the estimated K centers.}
+#'  \item{\code{cluster}}{: A vector of integer (from 1:K) indicating the cluster to
+#' which each point is allocated.}
+#'  \item{\code{iter}}{: Number of iterations until convergence is achieved or
+#' maximum number of iterations reached.}
+#'  \item{\code{di}}{: Distance of each observation to its assigned cluster-center.}
+#'  \item{\code{outliers}}{: A vector of integers with indices for each observation
+#' considered as outlier.}
 #'
 #' @examples
 #' # Generate synthetic data (three clusters well separated)
@@ -164,17 +162,15 @@ ktaucenters <- function(X,
 #' @param cutoff quantile of chi-square distribution to be used as a threshold for
 #' outliers detection, defaults to 0.999.
 #' @return A list with the following components:
-##' \itemize{
-##'  \item{\code{centers}}{: A matrix of cluster centers.}
-##'  \item{\code{cluster}}{: A vector of integer (from 1:k) indicating the cluster to
-##' which each point is allocated.}
-##' \item{\code{tau}}{: \eqn{\tau} scale value.}
-##'  \item{\code{iter}}{: Number of iterations until convergence is achieved
-##' or maximum number of iteration reached.}
-##'  \item{\code{di}}{: Distance of each observation to its assigned cluster-center}
-##'  \item{\code{outliers}}{: A vector of integers with indices for each observation
-##' considered as outlier.}
-##' }
+#'  \item{\code{centers}}{: A matrix of cluster centers.}
+#'  \item{\code{cluster}}{: A vector of integer (from 1:k) indicating the cluster to
+#' which each point is allocated.}
+#' \item{\code{tau}}{: \eqn{\tau} scale value.}
+#'  \item{\code{iter}}{: Number of iterations until convergence is achieved
+#' or maximum number of iteration reached.}
+#'  \item{\code{di}}{: Distance of each observation to its assigned cluster-center}
+#'  \item{\code{outliers}}{: A vector of integers with indices for each observation
+#' considered as outlier.}
 #'
 #' @examples
 #' # Generate synthetic data (three clusters well separated)

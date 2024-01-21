@@ -14,14 +14,13 @@
 #' that clusters and robust covariance matrices will be computed, if it is set as NULL the
 #' algorithm will compute from ktaucenters routine. Set to NULL by default.
 #' @return A list with the following components:
-#' \itemize{
 #'  \item{\code{centers}}{: Matrix of size K x p, with the estimated K centers.}
 #'  \item{\code{cluster}}{: A vector of integer (from 1:k) indicating the cluster to
 #' which each point is allocated.}
 #'  \item{\code{sigmas}}{: A list containing the k covariance matrices found by the 
 #' procedure at its second step.}
 #'  \item{\code{outliers}}{: indices observation that can be considered as outliers.}
-#' }
+#'
 #' @importFrom GSE GSE getLocation getScatter
 #' @importFrom MASS ginv
 #' @importFrom stats mahalanobis qchisq

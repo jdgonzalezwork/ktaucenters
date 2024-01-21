@@ -18,7 +18,7 @@ whereas elements 65 to 128 of each row indicate the cell's Intensity  values.
 }
 }
 \source{
-\url{https://www.nasa.gov/mission_pages/msl/multimedia/pia16225.html}
+\url{https://www.nasa.gov/wp-content/uploads/2023/03/694811main_pia16225-43_full.jpg}
 }
 \usage{
 mars_screw

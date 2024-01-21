@@ -24,14 +24,12 @@ algorithm will compute from ktaucenters routine. Set to NULL by default.}
 }
 \value{
 A list with the following components:
-\itemize{
  \item{\code{centers}}{: Matrix of size K x p, with the estimated K centers.}
  \item{\code{cluster}}{: A vector of integer (from 1:k) indicating the cluster to
 which each point is allocated.}
  \item{\code{sigmas}}{: A list containing the k covariance matrices found by the 
 procedure at its second step.}
  \item{\code{outliers}}{: indices observation that can be considered as outliers.}
-}
 }
 \description{
 Robust Clustering algorithm for non-spherical data. This function estimate

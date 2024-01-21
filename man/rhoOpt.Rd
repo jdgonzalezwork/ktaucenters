@@ -4,12 +4,12 @@
 \alias{rhoOpt}
 \title{Quasi optimal \eqn{\rho} function}
 \usage{
-rhoOpt(x, c)
+rhoOpt(x, cc)
 }
 \arguments{
 \item{x}{numeric vector with positive values.}
 
-\item{c}{tunning constant.}
+\item{cc}{tunning constant.}
 }
 \value{
 Numeric vector with quasi optimal \eqn{\rho} computation for each element

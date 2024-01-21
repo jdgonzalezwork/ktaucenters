@@ -4,83 +4,92 @@
 \alias{ktaucenters}
 \title{ktaucenters}
 \usage{
-ktaucenters(X, K, centers = NULL, tolmin = 1e-06, NiterMax = 100,
-  nstart = 1, startWithKmeans = TRUE, startWithROBINPD = TRUE,
-  cutoff = 0.999)
+ktaucenters(
+  X,
+  K,
+  centers = NULL,
+  tolmin = 1e-06,
+  NiterMax = 100,
+  nstart = 1,
+  startWithKmeans = TRUE,
+  startWithROBINPD = TRUE,
+  cutoff = 0.999
+)
 }
 \arguments{
-\item{X}{numeric matrix  of size n x p.}
+\item{X}{numeric matrix of size n x p.}
 
-\item{K}{the number of cluster.}
+\item{K}{number of clusters.}
 
 \item{centers}{a matrix of size K x p containing the K initial centers,
-one at each matrix-row. If centers is NULL a random set of (distinct) rows in  \code{X}
-are chosen as the initial centres.}
+one at each matrix-row. If centers is NULL a random set of (distinct) rows in
+\code{X}
+are chosen as the initial centers.}
 
-\item{tolmin}{a tolerance parameter used for the algorithm stopping rule}
+\item{tolmin}{a tolerance parameter used for the algorithm stopping rule.}
 
-\item{NiterMax}{a maximun number of iterations used for the algorithm stopping rule}
+\item{NiterMax}{a maximum number of iterations used for the algorithm stopping rule.}
 
-\item{nstart}{the number of trials that the base algorithm ktaucenters_aux is run.
-If it is greater than 1 and center is not set as NULL, a random set of (distinct) rows
-in \code{X} will be chosen as the initial centres.}
+\item{nstart}{the number of trials that the base algorithm is run.
+If it is greater than 1 and centers is not set as NULL, a random set of (distinct)
+rows
+in \code{X} will be chosen as the initial centers.}
 
-\item{startWithKmeans}{TRUE if kmean centers values is included as starting point.}
+\item{startWithKmeans}{if positive (or true) kmeans estimated centers are included
+as starting point.}
 
-\item{startWithROBINPD}{TRUE if ROBINDEN estimator is included as starting point}
+\item{startWithROBINPD}{if positive (or true) ROBINDEN estimated centers are
+included as starting point.}
 
-\item{cutoff}{optional argument for outliers detection - quantiles of chi-square to be used as a threshold for outliers detection, defaults to 0.999}
+\item{cutoff}{optional argument for outliers detection - quantiles of chi-square
+to be used as a threshold
+for outliers detection, defaults to 0.999.}
 }
 \value{
-A list including the estimated K centers and labels for the observations
-\itemize{
- \item{\code{centers}}{:   matrix of size K x p, with the estimated K centers.}
- \item{\code{cluster}}{: array of size n x 1  integers labels between 1 and K.}
- \item{\code{tauPath}}{: sequence of tau scale values at each iterations.}
- \item{\code{Wni}}{: numeric array of size n x 1 indicating the weights associated to each observation.}
- \item{\code{emptyClusterFlag}}{: a boolean value. True means that in some iteration there were clusters totally empty}
- \item{\code{niter}}{: number of iterations untill convergence is achived or maximun number of iteration is reached}
- \item{\code{di}}{: distance of each observation to its assigned cluster-center}
- \item{\code{outliers}}{: indices observation that can be considered as outliers}
-}
+A list with the following components:
+ \item{\code{centers}}{: Matrix of size K x p with the estimated K centers.}
+ \item{\code{cluster}}{: A vector of integer (from 1:K) indicating the cluster to
+which each point is allocated.}
+ \item{\code{iter}}{: Number of iterations until convergence is achieved or
+maximum number of iterations reached.}
+ \item{\code{di}}{: Distance of each observation to its assigned cluster-center.}
+ \item{\code{outliers}}{: A vector of integers with indices for each observation
+considered as outlier.}
 }
 \description{
-Robust Clustering algorithm based on centers, a robust and efficient version of KMeans.
+Robust and efficient version of Kmeans algorithm for clustering based on centers.
 }
 \examples{
-# Generate Sintetic data (three cluster well separated)
-Z <- rnorm(600);
+# Generate synthetic data (three clusters well separated)
+Z <- rnorm(600)
 mues <- rep(c(-3, 0, 3), 200)
-X <-  matrix(Z + mues, ncol=2)
+X <- matrix(Z + mues, ncol = 2)
 
-# Generate 60 sintetic outliers (contamination level 20\%)
+# Generate 60 synthetic outliers (contamination level 20\%)
 X[sample(1:300,60), ] <- matrix(runif( 40, 3 * min(X), 3 * max(X) ),
                                 ncol = 2, nrow = 60)
 
-### Applying the algortihm ####
-sal <- ktaucenters(
-     X, K=3, centers=X[sample(1:300,3), ],
-     tolmin=1e-3, NiterMax=100)
+robust <- ktaucenters(
+     X, K = 3, centers = X[sample(1:300, 3), ],
+     tolmin = 1e-3, NiterMax = 100)
 
-#### plotting  the clusters####
-par(mfrow = c(1,1));
+oldpar <- par(mfrow = c(1, 2))
 
-par(mfrow = c(1,2))
-plot(X,type = "n", main = "ktaucenters (Robust) \\n outliers: solid black dots")
-points(X[sal$cluster==1,],col=2);
-points(X[sal$cluster==2,],col=3);
-points(X[sal$cluster==3,],col=4)
-points(X[sal$outliers,1], X[sal$outliers,2], pch=19)
+plot(X,type = "n", main = "ktaucenters (Robust) \n outliers: solid black dots")
+points(X[robust$cluster == 1, ], col = 2)
+points(X[robust$cluster == 2, ], col = 3)
+points(X[robust$cluster == 3, ], col = 4)
+points(X[robust$outliers, 1], X[robust$outliers, 2], pch = 19)
 
-### Applying a classical (non Robust) algortihm ###
-sal <- kmeans(X, centers=3,nstart=100)
+# Classical (non Robust) algorithm
+non_robust <- kmeans(X, centers = 3, nstart = 100)
 
-### plotting the clusters ###
-plot(X, type ="n", main = "kmeans (Classical)")
-points(X[sal$cluster==1,],col=2);
-points(X[sal$cluster==2,],col=3);
-points(X[sal$cluster==3,],col=4)
+plot(X, type = "n", main = "kmeans (Classical)")
+points(X[non_robust$cluster == 1, ], col = 2)
+points(X[non_robust$cluster == 2, ], col = 3)
+points(X[non_robust$cluster == 3, ], col = 4)
 
+par(oldpar)
 }
 \references{
 Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019). 

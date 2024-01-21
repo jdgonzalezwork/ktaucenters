@@ -4,98 +4,95 @@
 \alias{improvedktaucenters}
 \title{improvedktaucenters}
 \usage{
-improvedktaucenters(X, K, cutoff = 0.999, nstart = 5,
-  INITcenters = NULL)
+improvedktaucenters(X, K, cutoff = 0.999, nstart = 5, INITcenters = NULL)
 }
 \arguments{
-\item{X}{numeric matrix  of size n x p.}
+\item{X}{numeric matrix of size n x p.}
 
-\item{K}{the number of cluster.}
+\item{K}{number of clusters.}
 
-\item{cutoff}{optional argument for getOutliers - quantiles of chi-square to be used as a threshold for outliers detection, defaults to 0.999}
+\item{cutoff}{argument for outliers detection - quantiles of chi-square
+to be used as a threshold for outliers detection, defaults to 0.999.}
 
-\item{nstart}{optional the number of trials that the base algorithm ktaucenters_aux is run
-at the first stage. #' If it is greater than 1 and center is not set as NULL,
-a random set of (distinct) rows in x is chosen as the initial centres for each try.}
+\item{nstart}{number of trials that the base ktaucenters is run at the first stage.
+If it is greater than 1 and center is not set as NULL, a random set of (distinct) 
+rows in x is chosen as the initial centres for each trial.}
 
-\item{INITcenters}{numeric matrix  of size K x p indicating the initial centers for that clusters and robust covarianze matrices will be 
-computed, if it is set as NULL the algorithm will compute @param INITcenters from ktaucenters routine. Set to NULL by default.}
+\item{INITcenters}{numeric matrix of size K x p indicating the initial centers for
+that clusters and robust covariance matrices will be computed, if it is set as NULL the
+algorithm will compute from ktaucenters routine. Set to NULL by default.}
 }
 \value{
-A list including the estimated K centers and clusters labels for the observations
-\itemize{
- \item{\code{centers}}{:   matrix of size K x p, with the estimated K centers.}
- \item{\code{cluster}}{: array of size n x 1  integers labels between 1 and K.}
- \item{\code{tauPath}}{: sequence of tau scale values at each iterations.}
- \item{\code{Wni}}{: numeric array of size n x 1 indicating the weights associated to each observation.}
- \item{\code{emptyClusterFlag}}{: a boolean value. True means that in some iteration there were clusters totally empty.}
- \item{\code{niter}}{: number of iterations untill convergence is achived or maximun number of iteration is reached.}
- \item{\code{sigmas}}{: a list containing the k covariance matrices found by the procedure at its second step.}
+A list with the following components:
+ \item{\code{centers}}{: Matrix of size K x p, with the estimated K centers.}
+ \item{\code{cluster}}{: A vector of integer (from 1:k) indicating the cluster to
+which each point is allocated.}
+ \item{\code{sigmas}}{: A list containing the k covariance matrices found by the 
+procedure at its second step.}
  \item{\code{outliers}}{: indices observation that can be considered as outliers.}
 }
-}
 \description{
-Robust Clustering algorithm for non-spherical data. This function estimate clusters taking into account that clusters may have
+Robust Clustering algorithm for non-spherical data. This function estimate
+clusters taking into account that clusters may have
 different size, volume or orientation.
 }
 \examples{
 
-# Generate Sintetic data (three normal cluster in two dimension)
-# clusters have different shapes and orentation.
+# Generate synthetic data (three normal cluster in two dimensions)
+# Clusters have different shapes and orientation.
 # The data is contaminated uniformly (level 20\%).
 
-################################################
-#### Start data generating process ############
-##############################################
-
-# generates base clusters
+# Generates base clusters
 set.seed(1)
-Z1 <- c(rnorm(100,0),rnorm(100,0),rnorm(100,0))
-Z2 <- rnorm(300);
-X <-  matrix(0, ncol=2,nrow=300);
-X[,1]=Z1;X[,2]=Z2
-true.cluster= c(rep(1,100),rep(2,100),rep(3,100))
+Z1 <- c(rnorm(100, 0), rnorm(100, 0), rnorm(100, 0))
+Z2 <- rnorm(300)
+X <- matrix(0, ncol = 2, nrow = 300)
+X[, 1] <- Z1
+X[, 2] <- Z2
+true.cluster <- c(rep(1, 100), rep(2, 100), rep(3, 100))
 
-# rotate, expand and translate base clusters
-theta=pi/3;
-aux1=matrix(c(cos(theta),-sin(theta),sin(theta),cos(theta)),nrow=2)
-aux2=sqrt(4)*diag(c(1,1/4))
-B=aux1\%*\%aux2\%*\%t(aux1)
-X[true.cluster==3,]=X[true.cluster==3,]\%*\%aux2\%*\%aux1 + matrix(c(5,2),byrow = TRUE,nrow=100,ncol=2)
-X[true.cluster==2,2]=X[true.cluster==2,2]*5
-X[true.cluster==1,2]=X[true.cluster==1,2]*0.1
-X[true.cluster==1, ]=X[true.cluster==1,]+ matrix(c(-5,-1),byrow = TRUE,nrow=100,ncol=2)
-### Generate 60 sintetic outliers (contamination level 20\%)
+# Rotate, expand and translate base clusters
+theta <- pi/3
+aux1 <- matrix(c(cos(theta), -sin(theta), sin(theta), cos(theta)), nrow = 2)
+aux2 <- sqrt(4) * diag(c(1, 1/4))
+B <- aux1 \%*\% aux2 \%*\% t(aux1)
+X[true.cluster == 3, ] <-
+  X[true.cluster == 3, ] \%*\% aux2 \%*\% aux1 + matrix(c(5, 2),
+                                                  byrow = TRUE,
+                                                  nrow = 100,
+                                                  ncol = 2)
+X[true.cluster == 2, 2] <- X[true.cluster == 2, 2] * 5
+X[true.cluster == 1, 2] <- X[true.cluster == 1, 2] * 0.1
+X[true.cluster == 1, ] <- X[true.cluster == 1, ] + matrix(c(-5, -1),
+                                                          byrow = TRUE,
+                                                          nrow = 100,
+                                                          ncol = 2)
 
-outliers=sample(1:300,60)
+# Generate 60 synthetic outliers (contamination level 20\%)
+
+outliers <- sample(1:300, 60)
 X[outliers, ] <- matrix(runif( 40, 2 * min(X), 2 * max(X) ),
                                 ncol = 2, nrow = 60)
-###############################################
-#### END data generating process ############
-#############################################
 
-#############################################
-### Applying the algortihm ##################
-#############################################
-ret=improvedktaucenters(X,K=3,cutoff=0.999)
+# Applying the algorithm
+robust <- improvedktaucenters(X, K = 3, cutoff = 0.999)
 
-#############################################
-### plotting results ########################
-#############################################
-par(mfrow=c(2,1))
-#' plot(X,main="actual clusters")
+# Plotting results
+oldpar <- par(mfrow = c(2, 1))
+plot(X, main = "Actual clusters")
 for (j in 1:3){
- points(X[true.cluster==j,],pch=19, col=j+1)
+ points(X[true.cluster == j, ], pch = 19, col = j + 1)
 }
-points(X[outliers,],pch=19,col=1)
-plot(X,main="clusters estimation")
+points(X[outliers, ], pch = 19, col = 1)
+plot(X, main = "Clusters estimation")
 for (j in 1:3){
- points(X[ret$cluster==j,],pch=19, col=j+1)
+ points(X[robust$cluster == j,], pch = 19, col = j + 1)
 }
-points(X[ret$outliers,],pch=19)
+points(X[robust$outliers, ], pch = 19)
 
+par(oldpar)
 }
 \references{
-Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019). 
+Gonzalez, J. D., Yohai, V. J., & Zamar, R. H. (2019).
 Robust Clustering Using Tau-Scales. arXiv preprint arXiv:1906.08198.
 }
